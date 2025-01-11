@@ -1,17 +1,16 @@
 # src/bluesky_handler.py
 
-from bsky import BskyAgent
+from atproto import Client
 import logging
 
 logger = logging.getLogger(__name__)
 
 def post_content_to_bluesky(identifier, password, content):
-    agent = BskyAgent(service="https://bsky.social")
-    
+    client = Client()
     try:
-        agent.login(identifier, password)
+        client.login(identifier, password)
         
-        response = agent.post(text=content)
+        response = client.send_post(text=content)
         
         logger.info(f"Successfully posted to Bluesky: {response}")
         return True
