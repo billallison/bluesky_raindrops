@@ -1,3 +1,5 @@
+# src/raindrop_handler.py
+
 import requests
 import json
 import logging
@@ -18,12 +20,7 @@ def get_latest_raindrop_to_skeet(token):
         headers=headers,
         params=params
     )
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        logger.error(f"HTTP Error: {str(e)}")
-        logger.error(f"Response content: {response.text}")
-        raise
+    response.raise_for_status()
     
     raindrops = response.json().get('items', [])
     return raindrops[0] if raindrops else None
@@ -33,12 +30,13 @@ def remove_toskeet_tag(token, raindrop_id):
         "Authorization": f"Bearer {token}"
     }
     data = {
-        "tags": ["toskeet"]
+        "remove": ["toskeet"]
     }
     response = requests.put(
-        f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}/tags",
+        f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}",
         headers=headers,
         json=data
     )
     response.raise_for_status()
+    logger.info(f"Remove tag response: {response.json()}")
     return response.json().get('result', False)

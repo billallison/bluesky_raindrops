@@ -16,23 +16,31 @@ def main():
     try:
         raindrop = get_latest_raindrop_to_skeet(config['RAINDROP_TOKEN'])
         if raindrop:
-            post_content = format_bluesky_post_from_raindrop(raindrop)
+            post_content, facets, embed = format_bluesky_post_from_raindrop(raindrop)
             success = post_content_to_bluesky(
                 config['BLUESKY_IDENTIFIER'],
                 config['BLUESKY_PASSWORD'],
-                post_content
+                post_content,
+                facets,
+                embed
             )
             if success:
                 logger.info("Successfully posted to Bluesky")
-                remove_toskeet_tag(config['RAINDROP_TOKEN'], raindrop['_id'])
-                logger.info("Removed 'toskeet' tag from Raindrop")
+                if remove_toskeet_tag(config['RAINDROP_TOKEN'], raindrop['_id']):
+                    logger.info("Removed 'toskeet' tag from Raindrop")
+                else:
+                    logger.error("Failed to remove 'toskeet' tag from Raindrop")
+                    send_error_alert("Failed to remove 'toskeet' tag from Raindrop")
             else:
-                logger.error("Failed to post to Bluesky")
+                error_msg = "Failed to post to Bluesky"
+                logger.error(error_msg)
+                send_error_alert(error_msg)
         else:
             logger.info("No new content to post")
     except Exception as e:
-        logger.error(f"An unexpected error occurred: {str(e)}")
-        send_error_alert(str(e))
+        error_msg = f"An unexpected error occurred: {str(e)}"
+        logger.error(error_msg)
+        send_error_alert(error_msg)
 
 if __name__ == "__main__":
     main()
