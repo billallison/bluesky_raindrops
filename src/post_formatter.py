@@ -1,7 +1,9 @@
 # src/post_formatter.py
 
 import re
-from atproto import models
+from atproto import Client
+from atproto.xrpc_client.models import ids
+from atproto.xrpc_client.models import app
 import requests
 from urllib.parse import urlparse
 import io
@@ -21,9 +23,9 @@ def format_bluesky_post_from_raindrop(raindrop):
     url_match = re.search(re.escape(link), formatted_text)
     if url_match:
         start, end = url_match.span()
-        facets.append(models.AppBskyRichtextFacet.Main(
-            index=models.AppBskyRichtextFacet.ByteSlice(byteStart=start, byteEnd=end),
-            features=[models.AppBskyRichtextFacet.Link(uri=link)]
+        facets.append(app.bsky.richtext.facet.Main(
+            index=app.bsky.richtext.facet.ByteSlice(byteStart=start, byteEnd=end),
+            features=[app.bsky.richtext.facet.Link(uri=link)]
         ))
     
     # Prepare embed for the image
