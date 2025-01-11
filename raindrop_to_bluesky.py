@@ -1,4 +1,4 @@
-# main.py
+# raindrop_to_bluesky.py
 
 import logging
 from src.raindrop_handler import get_latest_raindrop_to_skeet, remove_toskeet_tag
