@@ -27,11 +27,11 @@ def main():
                 remove_toskeet_tag(config['RAINDROP_TOKEN'], raindrop['_id'])
                 logger.info("Removed 'toskeet' tag from Raindrop")
             else:
-                raise Exception("Failed to post to Bluesky")
+                logger.error("Failed to post to Bluesky")
         else:
             logger.info("No new content to post")
     except Exception as e:
-        logger.error(f"An error occurred: {str(e)}")
+        logger.error(f"An unexpected error occurred: {str(e)}")
         send_error_alert(str(e))
 
 if __name__ == "__main__":
