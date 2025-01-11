@@ -44,52 +44,35 @@ def get_latest_raindrop_to_skeet(token):
         logger.error(f"Error fetching Raindrops: {str(e)}")
         return None
 
-def remove_toskeet_tag(raindrop_id, access_token):
+def remove_toskeet_tag(access_token, raindrop_id):
     """
     Remove the 'toskeet' tag from a Raindrop by first retrieving the existing tags.
 
     Args:
-        raindrop_id: The numeric ID of the Raindrop to update.
         access_token: Raindrop API access token.
-
-    Returns:
-        True if the tag was successfully removed, False otherwise.
+        raindrop_id: The numeric ID of the Raindrop to update.
     """
-    # Validate raindrop_id
-    if not isinstance(raindrop_id, int):
-        logger.error(f"Invalid Raindrop ID (not numeric): {raindrop_id}")
-        return False
-
-    get_url = f'https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}'
-    update_url = f'https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}'
     headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}"
     }
 
     try:
-        # Fetch current tags on the Raindrop
-        response = requests.get(get_url, headers=headers, timeout=10)
-        response.raise_for_status()
-
-        raindrop = response.json()
-        if 'item' not in raindrop:
-            logger.error(f"Failed to fetch Raindrop data. Response: {raindrop}")
-            return False
-
-        current_tags = raindrop['item'].get('tags', [])
-        logger.info(f"Current tags for Raindrop ID {raindrop_id}: {current_tags}")
-
-        # Check if 'toskeet' is in the tags
+        # First, get the current tags
+        get_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
+        get_response = requests.get(get_url, headers=headers)
+        get_response.raise_for_status()
+        
+        current_raindrop = get_response.json().get('item', {})
+        current_tags = current_raindrop.get('tags', [])
+        
+        # Remove 'toskeet' from the tags
         if 'toskeet' in current_tags:
-            new_tags = [tag for tag in current_tags if tag != 'toskeet']
-            logger.info(f"New tags after removing 'toskeet': {new_tags}")
-
-            # Prepare and send tag update request
-            update_data = {
-                "tags": new_tags
-            }
-            update_response = requests.put(update_url, headers=headers, json=update_data, timeout=10)
+            current_tags.remove('toskeet')
+            
+            # Update the Raindrop with the new tags
+            update_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
+            update_data = {"tags": current_tags}
+            update_response = requests.put(update_url, headers=headers, json=update_data)
             update_response.raise_for_status()
 
             # Parse response for success
