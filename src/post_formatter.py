@@ -1,9 +1,6 @@
 # src/post_formatter.py
 
 import re
-from atproto import Client
-from atproto.xrpc_client.models import ids
-from atproto.xrpc_client.models import app
 import requests
 from urllib.parse import urlparse
 import io
@@ -13,46 +10,52 @@ def format_bluesky_post_from_raindrop(raindrop):
     link = raindrop.get('link', '')
     note = raindrop.get('note', '')
     cover = raindrop.get('cover', '')  # Get the cover image URL from Raindrop
-    
+
     skeet_content = extract_skeet_content(note)
-    
+
     formatted_text = f"{title}\n\n{skeet_content}\n\n{link}".strip()
-    
+
     # Create facets for the URL
     facets = []
     url_match = re.search(re.escape(link), formatted_text)
     if url_match:
         start, end = url_match.span()
-        facets.append(app.bsky.richtext.facet.Main(
-            index=app.bsky.richtext.facet.ByteSlice(byteStart=start, byteEnd=end),
-            features=[app.bsky.richtext.facet.Link(uri=link)]
-        ))
-    
+        facets.append({
+            "index": {"byteStart": start, "byteEnd": end},
+            "features": [{"$type": "app.bsky.richtext.facet#link", "uri": link}]
+        })
+
     # Prepare embed for the image
     embed = None
     if cover:
         embed = create_image_embed(cover)
-    
+        print(f"Created embed successfully: {embed}")
+
     return formatted_text, facets, embed
+
 
 def extract_skeet_content(note):
     match = re.search(r'\[skeet_content:(.*?)\]', note, re.DOTALL)
     return match.group(1).strip() if match else ''
 
+
 def create_image_embed(image_url):
     try:
         response = requests.get(image_url)
         response.raise_for_status()
-        
+
         content_type = response.headers.get('content-type', '')
+        print(f"Image MIME type: {content_type}")
+
         if not content_type.startswith('image/'):
+            print("Invalid MIME type for image.")
             return None
-        
+
         file_name = urlparse(image_url).path.split('/')[-1]
-        
+
         # Create a file-like object from the image content
         image_file = io.BytesIO(response.content)
-        
+
         return {
             'image_file': image_file,
             'mime_type': content_type,

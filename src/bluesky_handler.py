@@ -1,49 +1,64 @@
 # src/bluesky_handler.py
 
-from atproto import Client
-from atproto.xrpc_client.models import ids
-from atproto.xrpc_client.models import app
-
 import logging
+from datetime import datetime
+from atproto import Client, models
 
 logger = logging.getLogger(__name__)
 
 def post_content_to_bluesky(identifier, password, content, facets, embed):
+    """
+    Post content to Bluesky with optional media embedding and hyperlink facets.
+    :param identifier: Bluesky handle or DID.
+    :param password: Bluesky account password.
+    :param content: Text content for the post.
+    :param facets: Rich text facets for clickable links.
+    :param embed: Optional embed dictionary (e.g., image metadata).
+    :return: Boolean indicating success.
+    """
     client = Client()
+
     try:
+        # Log in to the Bluesky client
         client.login(identifier, password)
-        
-        # Upload image if available
-        images = []
+        logger.info("Logged into Bluesky successfully.")
+
+        # Upload the image blob if an embed is provided
+        thumb_blob = None
         if embed:
-            with embed['image_file'] as f:
-                upload = client.upload_blob(f.read(), embed['mime_type'])
-                images.append(app.bsky.embed.images.Image(
-                    alt=embed['file_name'],
-                    image=upload.blob
-                ))
-        
-        # Create embed
-        embed_images = None
-        if images:
-            embed_images = app.bsky.embed.images.Main(images=images)
-        
-        # Create post
-        post = app.bsky.feed.post.Main(
-            text=content,
-            facets=facets,
-            embed=embed_images
+            logger.debug(f"Embed object before upload_blob: {embed}")
+
+            # Ensure image_file is readable and reset pointer
+            embed["image_file"].seek(0)
+
+            # Upload the binary image blob to Bluesky without mime_type
+            binary_data = embed["image_file"].read()
+            logger.debug(f"Binary data size: {len(binary_data)} bytes")
+            thumb_blob = client.upload_blob(binary_data)
+            logger.info(f"Image uploaded successfully: {thumb_blob}")
+
+        # Prepare the post embed structure if blob was uploaded
+        embed_structure = None
+        if thumb_blob:
+            embed_structure = models.AppBskyEmbedImages.Main(
+                images=[
+                    models.AppBskyEmbedImages.Image(
+                        alt=embed["file_name"],       # Alternative text
+                        image=thumb_blob.blob        # Blob reference
+                    )
+                ]
+            )
+            logger.debug(f"Post embed structure: {embed_structure}")
+
+        # Publish the post with facets (for the clickable hyperlink)
+        response = client.send_post(
+            text=content,            # Text body of the post
+            facets=facets,           # Hyperlink facets
+            embed=embed_structure    # Embed structure with the image
         )
-        
-        # Send post
-        response = client.com.atproto.repo.create_record(
-            repo=client.me.did,
-            collection=ids.AppBskyFeedPost,
-            record=post
-        )
-        
         logger.info(f"Successfully posted to Bluesky: {response}")
         return True
+
     except Exception as e:
         logger.error(f"Error posting to Bluesky: {str(e)}")
         return False
