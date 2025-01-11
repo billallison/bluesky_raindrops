@@ -1,5 +1,3 @@
-atproto
 requests
 python-dotenv
-atproto
-
+atproto  # Ensure compatibility with the Bluesky API

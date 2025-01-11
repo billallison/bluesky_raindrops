@@ -29,8 +29,9 @@ def main():
                 if remove_toskeet_tag(config['RAINDROP_TOKEN'], raindrop['_id']):
                     logger.info("Removed 'toskeet' tag from Raindrop")
                 else:
-                    logger.error("Failed to remove 'toskeet' tag from Raindrop")
-                    send_error_alert("Failed to remove 'toskeet' tag from Raindrop")
+                    error_msg = "Failed to remove 'toskeet' tag from Raindrop"
+                    logger.error(error_msg)
+                    send_error_alert(error_msg)
             else:
                 error_msg = "Failed to post to Bluesky"
                 logger.error(error_msg)
