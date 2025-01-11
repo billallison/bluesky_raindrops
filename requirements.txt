@@ -1,5 +1,5 @@
 atproto
 requests
-python-dotenv==0.19.2
-atproto==0.0.6
+python-dotenv
+atproto
 

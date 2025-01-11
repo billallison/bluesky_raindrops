@@ -1,11 +1,10 @@
 # src/utils/email_handler.py
-
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from src.utils.config import load_config
 
-def send_error_alert(error_message):
+def send_email(error_message):  # Changed function name from send_error_alert to send_email
     config = load_config()
     
     # Email configuration
@@ -31,4 +30,3 @@ def send_error_alert(error_message):
         print("Error alert email sent successfully")
     except Exception as e:
         print(f"Failed to send error alert email: {str(e)}")
-
