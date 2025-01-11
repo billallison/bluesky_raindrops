@@ -1,4 +1,4 @@
-# Raindrop to Bluesky Poster
+# Raindrop to Bluesky Reader Bot
 
 This Python script automatically posts content from Raindrop.io to Bluesky based on specific tags. It's designed to run periodically, fetching the most recent Raindrop item tagged with "toskeet" and posting it to Bluesky.
 
@@ -65,8 +65,8 @@ This Python script automatically posts content from Raindrop.io to Bluesky based
 
 ## How It Works
 
-1. The script queries the Raindrop.io API for the most recent item tagged with "toskeet".
-2. If found, it extracts the item's title, link, and any custom content from the note field.
+1. The script queries the Raindrop.io API for the most recent item tagged with "toskeet". (It's LIFO so the freshest saved links get posted first.)
+2. If a saved URL in Raindrop is found, the program extracts the item's title, link, and any custom content from the note field.
 3. The script then posts this information to Bluesky using the provided credentials.
 4. Upon successful posting, the "toskeet" tag is removed from the Raindrop item.
 5. If an error occurs, it's logged and an email notification is sent to the admin.
@@ -79,5 +79,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ```
-
-This README provides a comprehensive overview of your project, including installation instructions, usage guidelines, and a brief explanation of how the script works. You may want to adjust some details based on your specific implementation and preferences.
