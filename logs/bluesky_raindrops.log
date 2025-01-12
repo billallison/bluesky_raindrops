@@ -504,3 +504,86 @@ https://www.latent.space/p/o1-skill-issue
 2025-01-12 00:02:04,929 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "PUT /rest/v1/raindrop/943451164 HTTP/1.1" 200 None
 2025-01-12 00:02:04,930 - src.utils.logging_config - INFO - 'toskeet' tag successfully removed from Raindrop ID 943451164
 2025-01-12 00:02:04,931 - src.utils.logging_config - INFO - Removed 'toskeet' tag from Raindrop
+2025-01-12 00:17:46,152 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.raindrop.io:443
+2025-01-12 00:17:46,481 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "GET /rest/v1/raindrops/0?search=%5B%7B%22key%22%3A+%22tag%22%2C+%22val%22%3A+%22toskeet%22%7D%5D&sort=-created&perpage=1 HTTP/1.1" 200 None
+2025-01-12 00:17:46,482 - src.utils.logging_config - INFO - Latest Raindrop with 'toskeet': {'_id': 943451164, 'link': 'https://www.latent.space/p/o1-skill-issue', 'title': 'o1 isn’t a chat model (and that’s the point)', 'excerpt': 'How to use o1 in anger: Don’t Write Prompts; Write Briefs, Focus on Goals: describe WHAT you want, not HOW you want it, and Know what o1 does and does not do well!', 'note': '[skeet_content:Interesting concept on using o1 via "briefs" rather than prompts: "If you give it enough context, and tell it what you want outputted, it’ll often nail the solution in one-shot."]', 'type': 'article', 'user': {'$ref': 'users', '$id': 1241578}, 'cover': 'https://substackcdn.com/image/fetch/w_1200,h_600,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3e97fcc3-a572-4a87-b2c2-6fc016edd5dd_1276x598.png', 'media': [{'link': 'https://substackcdn.com/image/fetch/f_auto,q_auto:best,fl_progressive:steep/https%3A%2F%2Fswyx.substack.com%2Fapi%2Fv1%2Fpost_preview%2F154642736%2Ftwitter.jpg%3Fversion%3D4', 'type': 'image'}, {'link': 'https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3e97fcc3-a572-4a87-b2c2-6fc016edd5dd_1276x598.png', 'type': 'image'}, {'link': 'https://substackcdn.com/image/fetch/w_1300,h_650,c_fill,f_webp,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2dca9fd7-0e88-4921-964d-5f7804a9ecc1_1070x840.png', 'type': 'image'}], 'tags': ['genAI', 'llm', 'toskeet', 'foo'], 'important': False, 'reminder': {'date': None}, 'removed': False, 'created': '2025-01-12T06:25:36.230Z', 'collection': {'$ref': 'collections', '$id': 31914295, 'oid': 31914295}, 'highlights': [], 'lastUpdate': '2025-01-12T08:17:22.511Z', 'domain': 'latent.space', 'creatorRef': {'_id': 1241578, 'avatar': '', 'name': 'billallison', 'email': ''}, 'sort': 943451164, 'cache': {'status': 'ready', 'size': 8999513, 'created': '2025-01-12T06:26:36.734Z'}, 'broken': False, 'collectionId': 31914295}
+2025-01-12 00:17:46,483 - src.utils.logging_config - DEBUG - Formatted text: o1 isn’t a chat model (and that’s the point)
+Interesting concept on using o1 via "briefs" rather than prompts: "If you give it enough context, and tell it what you want outputted, it’ll often nail the solution in one-shot."
+
+https://www.latent.space/p/o1-skill-issue
+2025-01-12 00:17:46,485 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): substackcdn.com:443
+2025-01-12 00:17:46,562 - urllib3.connectionpool - DEBUG - https://substackcdn.com:443 "GET /image/fetch/w_1200,h_600,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3e97fcc3-a572-4a87-b2c2-6fc016edd5dd_1276x598.png HTTP/1.1" 200 53666
+2025-01-12 00:17:46,611 - PIL.TiffImagePlugin - DEBUG - tag: Orientation (274) - type: short (3) - value: b'\x01\x00'
+2025-01-12 00:17:46,611 - PIL.TiffImagePlugin - DEBUG - tag: XResolution (282) - type: rational (5) Tag Location: 34 - Data Location: 86 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-01-12 00:17:46,611 - PIL.TiffImagePlugin - DEBUG - tag: YResolution (283) - type: rational (5) Tag Location: 46 - Data Location: 94 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-01-12 00:17:46,611 - PIL.TiffImagePlugin - DEBUG - tag: ResolutionUnit (296) - type: short (3) - value: b'\x02\x00'
+2025-01-12 00:17:46,611 - PIL.TiffImagePlugin - DEBUG - tag: YCbCrPositioning (531) - type: short (3) - value: b'\x01\x00'
+2025-01-12 00:17:46,611 - PIL.TiffImagePlugin - DEBUG - tag: ExifIFD (34665) - type: long (4) - value: b'f\x00\x00\x00'
+2025-01-12 00:17:46,645 - src.utils.logging_config - DEBUG - Created embed successfully: {'image_file': <_io.BytesIO object at 0x140049120>, 'mime_type': 'image/png', 'file_name': 'https%3A%2F%2Fsubstack-post-media.png', 'image_url': 'https://substackcdn.com/image/fetch/w_1200,h_600,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3e97fcc3-a572-4a87-b2c2-6fc016edd5dd_1276x598.png', 'article_url': 'https://www.latent.space/p/o1-skill-issue', 'title': 'o1 isn’t a chat model (and that’s the point)', 'description': 'How to use o1 in anger: Don’t Write Prompts; Write Briefs, Focus on Goals: describe WHAT you want, n'}
+2025-01-12 00:17:46,645 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-12 00:17:46,646 - httpx - DEBUG - load_verify_locations cafile='/Users/wallison/TechProjects/bluesky-raindrops/venv/lib/python3.13/site-packages/certifi/cacert.pem'
+2025-01-12 00:17:46,653 - httpcore.connection - DEBUG - connect_tcp.started host='bsky.social' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-12 00:17:46,757 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1400f96a0>
+2025-01-12 00:17:46,757 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x137cb9880> server_hostname='bsky.social' timeout=5.0
+2025-01-12 00:17:46,846 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x137c3b9d0>
+2025-01-12 00:17:46,846 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-12 00:17:46,847 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-12 00:17:46,847 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-12 00:17:46,847 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-12 00:17:46,847 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-12 00:17:47,053 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 12 Jan 2025 08:17:47 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Powered-By', b'Express'), (b'Access-Control-Allow-Origin', b'*'), (b'RateLimit-Limit', b'30'), (b'RateLimit-Remaining', b'29'), (b'RateLimit-Reset', b'1736670166'), (b'RateLimit-Policy', b'30;w=300'), (b'ETag', b'W/"5e9-CR9gxheMt0w7riZg7upSgYLSlk8"'), (b'Vary', b'Accept-Encoding'), (b'Content-Encoding', b'gzip')])
+2025-01-12 00:17:47,054 - httpx - INFO - HTTP Request: POST https://bsky.social/xrpc/com.atproto.server.createSession "HTTP/1.1 200 OK"
+2025-01-12 00:17:47,054 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-12 00:17:47,055 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-12 00:17:47,055 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-12 00:17:47,055 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-12 00:17:47,060 - httpcore.connection - DEBUG - connect_tcp.started host='fibercap.us-west.host.bsky.network' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-12 00:17:47,133 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x140047110>
+2025-01-12 00:17:47,133 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x137cb9880> server_hostname='fibercap.us-west.host.bsky.network' timeout=5.0
+2025-01-12 00:17:47,227 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x137c662c0>
+2025-01-12 00:17:47,227 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-12 00:17:47,228 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-12 00:17:47,228 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-12 00:17:47,228 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-12 00:17:47,228 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-12 00:17:47,309 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'x-powered-by', b'Express'), (b'access-control-allow-origin', b'*'), (b'cache-control', b'private'), (b'vary', b'Authorization, Accept-Encoding'), (b'ratelimit-limit', b'3000'), (b'ratelimit-remaining', b'2983'), (b'ratelimit-reset', b'1736669962'), (b'ratelimit-policy', b'3000;w=300'), (b'content-type', b'application/json; charset=utf-8'), (b'atproto-repo-rev', b'3lfjruu4w3k24'), (b'atproto-content-labelers', b'did:plc:ar7c4by46qjdydhdevvrndac;redact'), (b'content-encoding', b'gzip'), (b'date', b'Sun, 12 Jan 2025 08:17:47 GMT'), (b'keep-alive', b'timeout=90'), (b'transfer-encoding', b'chunked'), (b'strict-transport-security', b'max-age=63072000')])
+2025-01-12 00:17:47,310 - httpx - INFO - HTTP Request: GET https://fibercap.us-west.host.bsky.network/xrpc/app.bsky.actor.getProfile?actor=readingbot.billallison.org "HTTP/1.1 200 OK"
+2025-01-12 00:17:47,310 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-12 00:17:47,311 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-12 00:17:47,311 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-12 00:17:47,311 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-12 00:17:47,314 - src.utils.logging_config - INFO - Logged into Bluesky successfully.
+2025-01-12 00:17:47,314 - src.utils.logging_config - DEBUG - Embed object before upload_blob: {'image_file': <_io.BytesIO object at 0x140049120>, 'mime_type': 'image/png', 'file_name': 'https%3A%2F%2Fsubstack-post-media.png', 'image_url': 'https://substackcdn.com/image/fetch/w_1200,h_600,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3e97fcc3-a572-4a87-b2c2-6fc016edd5dd_1276x598.png', 'article_url': 'https://www.latent.space/p/o1-skill-issue', 'title': 'o1 isn’t a chat model (and that’s the point)', 'description': 'How to use o1 in anger: Don’t Write Prompts; Write Briefs, Focus on Goals: describe WHAT you want, n'}
+2025-01-12 00:17:47,314 - src.utils.logging_config - DEBUG - Binary data size: 180050 bytes
+2025-01-12 00:17:47,315 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-12 00:17:47,316 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-12 00:17:47,316 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-12 00:17:47,509 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-12 00:17:47,509 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-12 00:17:47,960 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'x-powered-by', b'Express'), (b'access-control-allow-origin', b'*'), (b'cache-control', b'private'), (b'vary', b'Authorization, Accept-Encoding'), (b'ratelimit-limit', b'1000'), (b'ratelimit-remaining', b'995'), (b'ratelimit-reset', b'1736754277'), (b'ratelimit-policy', b'1000;w=86400'), (b'content-type', b'application/json; charset=utf-8'), (b'content-length', b'140'), (b'etag', b'W/"8c-fA0cznvlNbZL7Nhau9JsM7pP8bA"'), (b'date', b'Sun, 12 Jan 2025 08:17:47 GMT'), (b'keep-alive', b'timeout=90'), (b'strict-transport-security', b'max-age=63072000')])
+2025-01-12 00:17:47,961 - httpx - INFO - HTTP Request: POST https://fibercap.us-west.host.bsky.network/xrpc/com.atproto.repo.uploadBlob "HTTP/1.1 200 OK"
+2025-01-12 00:17:47,961 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-12 00:17:47,961 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-12 00:17:47,961 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-12 00:17:47,961 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-12 00:17:47,962 - src.utils.logging_config - INFO - Image uploaded successfully: blob=BlobRef(mime_type='image/png', size=180050, ref=IpldLink(link='bafkreic6ejqmus7bnmwnp5xcjhvpi5z4fjeqqbxgoub6il4jdsaspcgivy'), py_type='blob')
+2025-01-12 00:17:47,962 - src.utils.logging_config - DEBUG - Post embed structure: external=External(description='How to use o1 in anger: Don’t Write Prompts; Write Briefs, Focus on Goals: describe WHAT you want, n', title='o1 isn’t a chat model (and that’s the point)', uri='https://www.latent.space/p/o1-skill-issue', thumb=BlobRef(mime_type='image/png', size=180050, ref=IpldLink(link='bafkreic6ejqmus7bnmwnp5xcjhvpi5z4fjeqqbxgoub6il4jdsaspcgivy'), py_type='blob'), py_type='app.bsky.embed.external#external') py_type='app.bsky.embed.external'
+2025-01-12 00:17:47,964 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-12 00:17:47,965 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-12 00:17:47,965 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-12 00:17:47,966 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-12 00:17:47,966 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-12 00:17:48,533 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'x-powered-by', b'Express'), (b'access-control-allow-origin', b'*'), (b'cache-control', b'private'), (b'vary', b'Authorization, Accept-Encoding'), (b'ratelimit-limit', b'5000'), (b'ratelimit-remaining', b'4977'), (b'ratelimit-reset', b'1736669871'), (b'ratelimit-policy', b'5000;w=3600'), (b'content-type', b'application/json; charset=utf-8'), (b'content-length', b'276'), (b'etag', b'W/"114-2HM4z/qnkJVlAgfyNdy1qL7ppT8"'), (b'date', b'Sun, 12 Jan 2025 08:17:48 GMT'), (b'keep-alive', b'timeout=90'), (b'strict-transport-security', b'max-age=63072000')])
+2025-01-12 00:17:48,534 - httpx - INFO - HTTP Request: POST https://fibercap.us-west.host.bsky.network/xrpc/com.atproto.repo.createRecord "HTTP/1.1 200 OK"
+2025-01-12 00:17:48,534 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-12 00:17:48,534 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-12 00:17:48,534 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-12 00:17:48,535 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-12 00:17:48,535 - src.utils.logging_config - INFO - Successfully posted to Bluesky: uri='at://did:plc:uh3zarq7knzkoa4r2il7gbhm/app.bsky.feed.post/3lfjrvdaesj25' cid='bafyreicstxnlgwqzpkj3etagreelhl3o7nnjic74r7bg7xng3c3fnmgnwu'
+2025-01-12 00:17:48,535 - src.utils.logging_config - INFO - Successfully posted to Bluesky
+2025-01-12 00:17:48,538 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.raindrop.io:443
+2025-01-12 00:17:49,390 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "GET /rest/v1/raindrop/943451164 HTTP/1.1" 200 None
+2025-01-12 00:17:49,392 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.raindrop.io:443
+2025-01-12 00:17:49,731 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "PUT /rest/v1/raindrop/943451164 HTTP/1.1" 200 None
+2025-01-12 00:17:49,732 - src.utils.logging_config - INFO - 'toskeet' tag successfully removed from Raindrop ID 943451164
+2025-01-12 00:17:49,733 - src.utils.logging_config - INFO - Removed 'toskeet' tag from Raindrop

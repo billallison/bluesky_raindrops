@@ -14,6 +14,8 @@ def format_bluesky_post_from_raindrop(raindrop):
     link = raindrop.get('link', '').strip()
     note = raindrop.get('note', '')
     cover = raindrop.get('cover', '')
+    description = raindrop.get('excerpt', '')[:100]  # Get a short description, limit to 100 characters
+
 
     skeet_content = extract_skeet_content(note).strip()
  
@@ -42,6 +44,10 @@ def format_bluesky_post_from_raindrop(raindrop):
     embed = None
     if cover:
         embed = create_image_embed(cover)
+        if embed:
+            embed['article_url'] = link
+            embed['title'] = title
+            embed['description'] = description
         logger.debug(f"Created embed successfully: {embed}")
 
     return formatted_text, facets, embed
