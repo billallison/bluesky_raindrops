@@ -69,7 +69,12 @@ This Python script automatically posts content from Raindrop.io to Bluesky based
 ## How It Works
 
 1. The script queries the Raindrop.io API for the most recent item tagged with "toskeet". (It's LIFO so the freshest saved links get posted first.)
-2. If a saved URL in Raindrop is found, the program extracts the item's title, link, and any custom content from the note field.
+2. If a saved URL in Raindrop is found, the program extracts the item's title, link, and any custom content from the note field. To add comments to the bluesky post, add them in this format:
+```
+[skeet_content:_put your commentary to post here_]
+```
+Anything outside the braces will remain private (not posted).
+
 3. The script then posts this information to Bluesky using the provided credentials.
 4. Upon successful posting, the "toskeet" tag is removed from the Raindrop item.
 5. If an error occurs, it's logged and an email notification is sent to the admin.
@@ -77,6 +82,10 @@ This Python script automatically posts content from Raindrop.io to Bluesky based
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Future enhancements
+Add genAI alt-text for better accessibility
+Add an option for a short genAI summary in place of the excerpt
 
 ## License
 
