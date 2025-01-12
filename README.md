@@ -84,8 +84,8 @@ Anything outside the braces will remain private (not posted).
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Future enhancements
-Add genAI alt-text for better accessibility
-Add an option for a short genAI summary in place of the excerpt
+- Add genAI alt-text for better accessibility
+- Add an option for a short genAI summary in place of the excerpt
 
 ## License
 
