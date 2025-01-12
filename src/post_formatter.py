@@ -10,17 +10,18 @@ from src.utils.logging_config import setup_logging
 logger = setup_logging()
 
 def format_bluesky_post_from_raindrop(raindrop):
-    title = raindrop.get('title', '')
-    link = raindrop.get('link', '')
+    title = raindrop.get('title', '').strip()
+    link = raindrop.get('link', '').strip()
     note = raindrop.get('note', '')
-    cover = raindrop.get('cover', '')  # Get the cover image URL from Raindrop
+    cover = raindrop.get('cover', '')
 
-    skeet_content = extract_skeet_content(note)
-
+    skeet_content = extract_skeet_content(note).strip()
+ 
     # Ensure the URL is properly encoded
     encoded_link = quote(link, safe=':/?=')
 
-    formatted_text = f"{title}\n\n{skeet_content}\n\n{encoded_link}".strip()
+     # Adjust the formatting here
+    formatted_text = f"{title}\n{skeet_content}\n\n{encoded_link}".strip()
     logger.debug(f"Formatted text: {formatted_text}")
 
     # Create facets for the URL
@@ -55,9 +56,26 @@ def create_image_embed(image_url):
         response.raise_for_status()
         image = Image.open(io.BytesIO(response.content))
         
-        # Convert to PNG and resize if necessary
+        # Convert to PNG
         image = image.convert('RGB')
-        max_size = (1000, 1000)
+        
+        # Adjust the aspect ratio to 1.91:1
+        target_ratio = 1.91
+        current_ratio = image.width / image.height
+        
+        if current_ratio > target_ratio:
+            # Image is too wide, crop the width
+            new_width = int(image.height * target_ratio)
+            left = (image.width - new_width) // 2
+            image = image.crop((left, 0, left + new_width, image.height))
+        elif current_ratio < target_ratio:
+            # Image is too tall, crop the height
+            new_height = int(image.width / target_ratio)
+            top = (image.height - new_height) // 2
+            image = image.crop((0, top, image.width, top + new_height))
+        
+        # Resize to a suitable size for Bluesky, maintaining 1.91:1 ratio
+        max_size = (955, 500)  # 1.91:1 aspect ratio
         image.thumbnail(max_size, Image.LANCZOS)
         
         output = io.BytesIO()
@@ -70,7 +88,8 @@ def create_image_embed(image_url):
         return {
             'image_file': output,
             'mime_type': 'image/png',
-            'file_name': file_name
+            'file_name': file_name,
+            'image_url': image_url
         }
     except Exception as e:
         logger.exception(f"Error creating image embed: {str(e)}")
