@@ -24,7 +24,7 @@ def format_bluesky_post_from_raindrop(raindrop):
     encoded_link = quote(link, safe=':/?=')
 
      # Adjust the formatting here
-    formatted_text = f"{title}\n{skeet_content}\n\n{encoded_link}".strip()
+    formatted_text = f"{title}\n\n{skeet_content}\n\n{encoded_link}".strip()
     formatted_text = truncate_to_graphemes(formatted_text)
     logger.debug(f"Formatted text: {formatted_text}")
 
