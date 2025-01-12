@@ -1,10 +1,9 @@
 # src/bluesky_handler.py
 
-import logging
-from datetime import datetime
 from atproto import Client, models
+from src.utils.logging_config import setup_logging
 
-logger = logging.getLogger(__name__)
+logger = setup_logging()
 
 def post_content_to_bluesky(identifier, password, content, facets, embed):
     """
@@ -60,5 +59,5 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
         return True
 
     except Exception as e:
-        logger.error(f"Error posting to Bluesky: {str(e)}")
+        logger.exception(f"Error posting to Bluesky: {str(e)}")
         return False

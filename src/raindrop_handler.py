@@ -2,9 +2,9 @@
 
 import requests
 import json
-import logging
+from src.utils.logging_config import setup_logging
 
-logger = logging.getLogger(__name__)
+logger = setup_logging()
 
 def get_latest_raindrop_to_skeet(token):
     """
@@ -41,7 +41,7 @@ def get_latest_raindrop_to_skeet(token):
             return None
 
     except requests.exceptions.RequestException as e:
-        logger.error(f"Error fetching Raindrops: {str(e)}")
+        logger.exception(f"Error fetching Raindrops: {str(e)}")
         return None
 
 def remove_toskeet_tag(access_token, raindrop_id):
@@ -57,19 +57,20 @@ def remove_toskeet_tag(access_token, raindrop_id):
     }
 
     try:
-        # First, get the current tags
+        # First, get the current Raindrop data
         get_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
         get_response = requests.get(get_url, headers=headers)
         get_response.raise_for_status()
-        
-        current_raindrop = get_response.json().get('item', {})
-        current_tags = current_raindrop.get('tags', [])
-        
-        # Remove 'toskeet' from the tags
+        raindrop_data = get_response.json().get('item', {})
+
+        # Extract current tags
+        current_tags = raindrop_data.get('tags', [])
+
+        # Remove 'toskeet' tag if present
         if 'toskeet' in current_tags:
             current_tags.remove('toskeet')
-            
-            # Update the Raindrop with the new tags
+
+            # Update the Raindrop with the new tag list
             update_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
             update_data = {"tags": current_tags}
             update_response = requests.put(update_url, headers=headers, json=update_data)
@@ -86,8 +87,8 @@ def remove_toskeet_tag(access_token, raindrop_id):
             logger.warning(f"'toskeet' tag not found for Raindrop ID {raindrop_id}. No action taken.")
 
     except requests.exceptions.RequestException as e:
-        logger.error(f"HTTP error while removing 'toskeet' tag for Raindrop ID {raindrop_id}: {str(e)}")
+        logger.exception(f"HTTP error while removing 'toskeet' tag for Raindrop ID {raindrop_id}: {str(e)}")
     except Exception as e:
-        logger.error(f"Unexpected error while removing 'toskeet' tag: {str(e)}")
+        logger.exception(f"Unexpected error while removing 'toskeet' tag: {str(e)}")
 
     return False
