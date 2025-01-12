@@ -17,15 +17,20 @@ def format_bluesky_post_from_raindrop(raindrop):
     # Ensure the URL is properly encoded
     encoded_link = quote(link, safe=':/?=')
 
-    formatted_text = f"{title}\n\n{skeet_content}\n\n{link}".strip()
+    formatted_text = f"{title}\n\n{skeet_content}\n\n{encoded_link}".strip()
+    print(f"Formatted text: {formatted_text}")
 
     # Create facets for the URL
     facets = []
-    url_match = re.search(re.escape(encoded_link), formatted_text)
-    if url_match:
-        start, end = url_match.span()
+    # Find the last occurrence of the encoded link
+    link_start = formatted_text.rfind(encoded_link)
+    if link_start != -1:
+        link_end = link_start + len(encoded_link)
         facets.append({
-            "index": {"byteStart": start, "byteEnd": end},
+            "index": {
+                "byteStart": len(formatted_text[:link_start].encode('utf-8')),
+                "byteEnd": len(formatted_text[:link_end].encode('utf-8'))
+            },
             "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
         })
 
@@ -60,7 +65,7 @@ def create_image_embed(image_url, max_size_kb=976):
             image = image.convert('RGBA')
 
         # Resize the image to fit Bluesky's dimensions (assuming 1000x1000 max)
-        max_size = (1000, 1000)
+        max_size = (2000, 2000)
         image.thumbnail(max_size, Image.LANCZOS)
 
         # Create a new image with a transparent background
