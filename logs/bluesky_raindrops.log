@@ -1,0 +1,90 @@
+2025-01-11 17:36:31,346 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.raindrop.io:443
+2025-01-11 17:36:31,711 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "GET /rest/v1/raindrops/0?search=%5B%7B%22key%22%3A+%22tag%22%2C+%22val%22%3A+%22toskeet%22%7D%5D&sort=-created&perpage=1 HTTP/1.1" 200 None
+2025-01-11 17:36:31,712 - src.utils.logging_config - INFO - Latest Raindrop with 'toskeet': {'_id': 934227696, 'link': 'https://journal.uptimeinstitute.com/it-chargeback-drives-efficiency/', 'title': 'IT Chargeback Drives Efficiency - Uptime Institute Blog', 'excerpt': 'IT chargeback allocates IT costs to internal customers, improving accountability, cutting waste', 'note': '', 'type': 'article', 'user': {'$ref': 'users', '$id': 1241578}, 'cover': 'https://journal.uptimeinstitute.com/wp-content/uploads/2015/09/killian-copy.jpg', 'media': [{'link': 'https://journal.uptimeinstitute.com/wp-content/uploads/2015/09/killian-copy.jpg', 'type': 'image'}, {'link': 'https://journal.uptimeinstitute.com/wp-content/uploads/2015/09/11.jpg', 'type': 'image'}, {'link': 'https://journal.uptimeinstitute.com/wp-content/uploads/2015/09/18959533301_e9873c4aa4_o.jpg', 'type': 'image'}], 'tags': ['IT', 'budget', 'toskeet', 'foo'], 'important': False, 'reminder': {'date': None}, 'removed': False, 'created': '2024-12-31T05:33:14.930Z', 'collection': {'$ref': 'collections', '$id': 31955532, 'oid': 31955532}, 'highlights': [], 'lastUpdate': '2025-01-12T01:35:20.023Z', 'domain': 'journal.uptimeinstitute.com', 'creatorRef': {'_id': 1241578, 'avatar': '', 'name': 'billallison', 'email': ''}, 'sort': 934227696, 'cache': {'status': 'ready', 'size': 5296957, 'created': '2024-12-31T05:35:01.639Z'}, 'broken': False, 'collectionId': 31955532}
+2025-01-11 17:36:31,713 - src.utils.logging_config - DEBUG - Formatted text: IT Chargeback Drives Efficiency - Uptime Institute Blog
+
+
+
+https://journal.uptimeinstitute.com/it-chargeback-drives-efficiency/
+2025-01-11 17:36:31,720 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): journal.uptimeinstitute.com:443
+2025-01-11 17:36:31,820 - urllib3.connectionpool - DEBUG - https://journal.uptimeinstitute.com:443 "GET /wp-content/uploads/2015/09/killian-copy.jpg HTTP/1.1" 200 519664
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: ImageWidth (256) - type: short (3) - value: b'\x04\xb1'
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: ImageLength (257) - type: short (3) - value: b'\x01\xdb'
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: BitsPerSample (258) - type: short (3) Tag Location: 46 - Data Location: 158 - value: b'\x00\x08\x00\x08\x00\x08'
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: PhotometricInterpretation (262) - type: short (3) - value: b'\x00\x02'
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: Orientation (274) - type: short (3) - value: b'\x00\x01'
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: SamplesPerPixel (277) - type: short (3) - value: b'\x00\x03'
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: XResolution (282) - type: rational (5) Tag Location: 94 - Data Location: 164 - value: b"\x00\x0e\xa6\x00\x00\x00'\x10"
+2025-01-11 17:36:31,908 - PIL.TiffImagePlugin - DEBUG - tag: YResolution (283) - type: rational (5) Tag Location: 106 - Data Location: 172 - value: b"\x00\x0e\xa6\x00\x00\x00'\x10"
+2025-01-11 17:36:31,909 - PIL.TiffImagePlugin - DEBUG - tag: ResolutionUnit (296) - type: short (3) - value: b'\x00\x02'
+2025-01-11 17:36:31,909 - PIL.TiffImagePlugin - DEBUG - tag: Software (305) - type: string (2) Tag Location: 130 - Data Location: 180 - value: b'Adobe Photoshop CC (Macintosh)\x00'
+2025-01-11 17:36:31,909 - PIL.TiffImagePlugin - DEBUG - tag: DateTime (306) - type: string (2) Tag Location: 142 - Data Location: 211 - value: b'2015:09:28 10:53:29\x00'
+2025-01-11 17:36:31,909 - PIL.TiffImagePlugin - DEBUG - tag: ExifIFD (34665) - type: long (4) - value: b'\x00\x00\x00\xe8'
+2025-01-11 17:36:31,971 - src.utils.logging_config - DEBUG - Created embed successfully: {'image_file': <_io.BytesIO object at 0x108aae390>, 'mime_type': 'image/png', 'file_name': 'killian-copy.png'}
+2025-01-11 17:36:31,971 - httpx - DEBUG - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-01-11 17:36:31,971 - httpx - DEBUG - load_verify_locations cafile='/Users/wallison/TechProjects/bluesky-raindrops/venv/lib/python3.13/site-packages/certifi/cacert.pem'
+2025-01-11 17:36:31,977 - httpcore.connection - DEBUG - connect_tcp.started host='bsky.social' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-11 17:36:32,079 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1091656a0>
+2025-01-11 17:36:32,079 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x108af9a30> server_hostname='bsky.social' timeout=5.0
+2025-01-11 17:36:32,161 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1089979d0>
+2025-01-11 17:36:32,162 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-11 17:36:32,163 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-11 17:36:32,163 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-11 17:36:32,163 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-11 17:36:32,163 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-11 17:36:32,359 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 12 Jan 2025 01:36:32 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'X-Powered-By', b'Express'), (b'Access-Control-Allow-Origin', b'*'), (b'RateLimit-Limit', b'30'), (b'RateLimit-Remaining', b'28'), (b'RateLimit-Reset', b'1736645836'), (b'RateLimit-Policy', b'30;w=300'), (b'ETag', b'W/"5e9-V4e36gCmHSqV7tu3fqWsnOGAk8k"'), (b'Vary', b'Accept-Encoding'), (b'Content-Encoding', b'gzip')])
+2025-01-11 17:36:32,362 - httpx - INFO - HTTP Request: POST https://bsky.social/xrpc/com.atproto.server.createSession "HTTP/1.1 200 OK"
+2025-01-11 17:36:32,362 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-11 17:36:32,363 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-11 17:36:32,363 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-11 17:36:32,363 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-11 17:36:32,370 - httpcore.connection - DEBUG - connect_tcp.started host='fibercap.us-west.host.bsky.network' port=443 local_address=None timeout=5.0 socket_options=None
+2025-01-11 17:36:32,438 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x108aa3110>
+2025-01-11 17:36:32,439 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x108af9a30> server_hostname='fibercap.us-west.host.bsky.network' timeout=5.0
+2025-01-11 17:36:32,481 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1089be3f0>
+2025-01-11 17:36:32,481 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-01-11 17:36:32,482 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-11 17:36:32,482 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-01-11 17:36:32,482 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-11 17:36:32,482 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-01-11 17:36:32,575 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'x-powered-by', b'Express'), (b'access-control-allow-origin', b'*'), (b'cache-control', b'private'), (b'vary', b'Authorization, Accept-Encoding'), (b'ratelimit-limit', b'3000'), (b'ratelimit-remaining', b'2955'), (b'ratelimit-reset', b'1736645822'), (b'ratelimit-policy', b'3000;w=300'), (b'content-type', b'application/json; charset=utf-8'), (b'atproto-repo-rev', b'3lfj3g2th7l2c'), (b'atproto-content-labelers', b'did:plc:ar7c4by46qjdydhdevvrndac;redact'), (b'content-encoding', b'gzip'), (b'date', b'Sun, 12 Jan 2025 01:36:32 GMT'), (b'keep-alive', b'timeout=90'), (b'transfer-encoding', b'chunked'), (b'strict-transport-security', b'max-age=63072000')])
+2025-01-11 17:36:32,576 - httpx - INFO - HTTP Request: GET https://fibercap.us-west.host.bsky.network/xrpc/app.bsky.actor.getProfile?actor=readingbot.billallison.org "HTTP/1.1 200 OK"
+2025-01-11 17:36:32,577 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-01-11 17:36:32,577 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-11 17:36:32,577 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-11 17:36:32,577 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-11 17:36:32,579 - src.utils.logging_config - INFO - Logged into Bluesky successfully.
+2025-01-11 17:36:32,579 - src.utils.logging_config - DEBUG - Embed object before upload_blob: {'image_file': <_io.BytesIO object at 0x108aae390>, 'mime_type': 'image/png', 'file_name': 'killian-copy.png'}
+2025-01-11 17:36:32,580 - src.utils.logging_config - DEBUG - Binary data size: 555227 bytes
+2025-01-11 17:36:32,582 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-11 17:36:32,584 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-11 17:36:32,584 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-11 17:36:32,742 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-11 17:36:32,742 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-11 17:36:33,151 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'x-powered-by', b'Express'), (b'access-control-allow-origin', b'*'), (b'cache-control', b'private'), (b'vary', b'Authorization, Accept-Encoding'), (b'ratelimit-limit', b'1000'), (b'ratelimit-remaining', b'975'), (b'ratelimit-reset', b'1736667676'), (b'ratelimit-policy', b'1000;w=86400'), (b'content-type', b'application/json; charset=utf-8'), (b'content-length', b'140'), (b'etag', b'W/"8c-F6Ek84AMJlSs+CWTesZHqL1rI7c"'), (b'date', b'Sun, 12 Jan 2025 01:36:33 GMT'), (b'keep-alive', b'timeout=90'), (b'strict-transport-security', b'max-age=63072000')])
+2025-01-11 17:36:33,152 - httpx - INFO - HTTP Request: POST https://fibercap.us-west.host.bsky.network/xrpc/com.atproto.repo.uploadBlob "HTTP/1.1 200 OK"
+2025-01-11 17:36:33,152 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-11 17:36:33,152 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-11 17:36:33,152 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-11 17:36:33,153 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-11 17:36:33,153 - src.utils.logging_config - INFO - Image uploaded successfully: blob=BlobRef(mime_type='image/png', size=555227, ref=IpldLink(link='bafkreiczxim3uz4kzrr64hte2klqtlibhyulillai7m7rpshshvmpsfnse'), py_type='blob')
+2025-01-11 17:36:33,153 - src.utils.logging_config - DEBUG - Post embed structure: images=[Image(alt='killian-copy.png', image=BlobRef(mime_type='image/png', size=555227, ref=IpldLink(link='bafkreiczxim3uz4kzrr64hte2klqtlibhyulillai7m7rpshshvmpsfnse'), py_type='blob'), aspect_ratio=None, py_type='app.bsky.embed.images#image')] py_type='app.bsky.embed.images'
+2025-01-11 17:36:33,155 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-01-11 17:36:33,155 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-01-11 17:36:33,156 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-01-11 17:36:33,157 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-01-11 17:36:33,158 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-01-11 17:36:33,746 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'x-powered-by', b'Express'), (b'access-control-allow-origin', b'*'), (b'cache-control', b'private'), (b'vary', b'Authorization, Accept-Encoding'), (b'ratelimit-limit', b'5000'), (b'ratelimit-remaining', b'4975'), (b'ratelimit-reset', b'1736646816'), (b'ratelimit-policy', b'5000;w=3600'), (b'content-type', b'application/json; charset=utf-8'), (b'content-length', b'276'), (b'etag', b'W/"114-ufKxgTI6mwmx5B7U0g2t+fCUQGM"'), (b'date', b'Sun, 12 Jan 2025 01:36:33 GMT'), (b'keep-alive', b'timeout=90'), (b'strict-transport-security', b'max-age=63072000')])
+2025-01-11 17:36:33,746 - httpx - INFO - HTTP Request: POST https://fibercap.us-west.host.bsky.network/xrpc/com.atproto.repo.createRecord "HTTP/1.1 200 OK"
+2025-01-11 17:36:33,746 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-01-11 17:36:33,746 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-01-11 17:36:33,747 - httpcore.http11 - DEBUG - response_closed.started
+2025-01-11 17:36:33,747 - httpcore.http11 - DEBUG - response_closed.complete
+2025-01-11 17:36:33,748 - src.utils.logging_config - INFO - Successfully posted to Bluesky: uri='at://did:plc:uh3zarq7knzkoa4r2il7gbhm/app.bsky.feed.post/3lfj3htqksk2c' cid='bafyreigg26ldjfevsz3hh2vhswl7gwuy5ysphybv7hrq4brki77nc6palu'
+2025-01-11 17:36:33,748 - src.utils.logging_config - INFO - Successfully posted to Bluesky
+2025-01-11 17:36:33,750 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.raindrop.io:443
+2025-01-11 17:36:34,059 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "GET /rest/v1/raindrop/934227696 HTTP/1.1" 200 None
+2025-01-11 17:36:34,061 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.raindrop.io:443
+2025-01-11 17:36:34,929 - urllib3.connectionpool - DEBUG - https://api.raindrop.io:443 "PUT /rest/v1/raindrop/934227696 HTTP/1.1" 200 None
+2025-01-11 17:36:34,929 - src.utils.logging_config - INFO - 'toskeet' tag successfully removed from Raindrop ID 934227696
+2025-01-11 17:36:34,930 - src.utils.logging_config - INFO - Removed 'toskeet' tag from Raindrop
