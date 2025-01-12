@@ -6,6 +6,7 @@ from urllib.parse import urlparse, quote
 import io
 from PIL import Image
 from src.utils.logging_config import setup_logging
+import unidecode
 
 logger = setup_logging()
 
@@ -24,6 +25,7 @@ def format_bluesky_post_from_raindrop(raindrop):
 
      # Adjust the formatting here
     formatted_text = f"{title}\n{skeet_content}\n\n{encoded_link}".strip()
+    formatted_text = truncate_to_graphemes(formatted_text)
     logger.debug(f"Formatted text: {formatted_text}")
 
     # Create facets for the URL
@@ -100,3 +102,10 @@ def create_image_embed(image_url):
     except Exception as e:
         logger.exception(f"Error creating image embed: {str(e)}")
         return None
+
+def truncate_to_graphemes(text, limit=300):
+    """Truncate text to a specified number of graphemes."""
+    normalized = unidecode.unidecode(text)
+    if len(normalized) <= limit:
+        return text
+    return text[:limit - 3] + '...'
