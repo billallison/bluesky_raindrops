@@ -45,6 +45,9 @@ This Python script automatically posts content from Raindrop.io to Bluesky based
    SMTP_PORT=your_smtp_port
    SMTP_USERNAME=your_smtp_username
    SMTP_PASSWORD=your_smtp_password
+   # LOG Level
+   # You can set this to DEBUG, INFO, WARNING, ERROR, or CRITICAL depending on how verbose you want the logging to be.
+   LOG_LEVEL=WARNING
    ```
 
 ## Usage
