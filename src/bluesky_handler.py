@@ -39,9 +39,9 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
         # Prepare the post embed structure if blob was uploaded
         embed_structure = models.AppBskyEmbedExternal.Main(
             external=models.AppBskyEmbedExternal.External(
-                uri=embed["image_url"],
-                title=embed["file_name"],
-                description="",
+                uri=embed["article_url"], # was imagee_url
+                title=embed["title"], # was file_name
+                description=embed["description"],  # Optional: Add a short description
                 thumb=thumb_blob.blob
             )
         )
