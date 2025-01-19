@@ -17,11 +17,15 @@ def format_bluesky_post_from_raindrop(raindrop):
     cover = raindrop.get('cover', '')
     description = raindrop.get('excerpt', '')[:100]  # Get a short description, limit to 100 characters
 
+    logger.debug(f"Raindrop fields extracted: title={title}, link={link}, cover={cover}, description={description}.")
+
 
     skeet_content = extract_skeet_content(note).strip()
+    logger.debug(f"Extracted skeet content: {skeet_content}")
  
     # Ensure the URL is properly encoded
     encoded_link = quote(link, safe=':/?=')
+    logger.debug(f"Encoded URL: {encoded_link}")
 
      # Adjust the formatting here
     formatted_text = f"{title}\n\n{skeet_content}\n\n{encoded_link}".strip()
@@ -59,10 +63,15 @@ def extract_skeet_content(note):
     return match.group(1).strip() if match else ''
 
 def create_image_embed(image_url):
+    logger.debug(f"Starting image embedding process for URL: {image_url}")
+
     try:
         response = requests.get(image_url)
         response.raise_for_status()
+        logger.debug(f"Image downloaded successfully: size={len(response.content)} bytes")
+
         image = Image.open(io.BytesIO(response.content))
+        logger.debug(f"Image opened. Original dimensions: {image.width}x{image.height}")
         
         # Convert to PNG
         image = image.convert('RGB')
@@ -86,9 +95,12 @@ def create_image_embed(image_url):
         max_size = (955, 500)  # 1.91:1 aspect ratio
         image.thumbnail(max_size, Image.LANCZOS)
         
+        logger.debug(f"Image cropped and resized: {image.width}x{new_height}")
+
         output = io.BytesIO()
         image.save(output, format='PNG')
         output.seek(0)
+        logger.debug("Image successfully saved to buffer for upload")
         
         file_name = urlparse(image_url).path.split('/')[-1]
         file_name = f"{file_name.split('.')[0]}.png"
@@ -99,6 +111,9 @@ def create_image_embed(image_url):
             'file_name': file_name,
             'image_url': image_url
         }
+    except requests.exceptions.RequestException as e:
+        logger.exception(f"Failed to download image from {image_url}: {str(e)}")
+        return None
     except Exception as e:
         logger.exception(f"Error creating image embed: {str(e)}")
         return None

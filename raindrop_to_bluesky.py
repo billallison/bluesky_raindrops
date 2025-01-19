@@ -43,4 +43,9 @@ def main():
         send_error_alert(error_msg)
 
 if __name__ == "__main__":
-    main()
+    try:
+        # Existing logic for raindrop-to-bluesky process
+        main()
+        pass
+    except Exception as e:
+        logger.exception(f"Unexpected error occurred in main script: {str(e)}")
