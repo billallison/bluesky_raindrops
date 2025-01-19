@@ -1,5 +1,4 @@
 # src/bluesky_handler.py
-
 from atproto import Client, models
 from src.utils.logging_config import setup_logging
 
@@ -16,7 +15,6 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
     :return: Boolean indicating success.
     """
     client = Client()
-
     try:
         # Log in to the Bluesky client
         client.login(identifier, password)
@@ -24,32 +22,31 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
 
         # Upload the image blob if an embed is provided
         thumb_blob = None
-        if embed and embed.get('image_file'):
+        if embed:
+            logger.debug(f"Embed object before upload_blob: {embed}")
+            # Ensure image_file is readable and reset pointer
+            embed["image_file"].seek(0)
+            binary_data = embed["image_file"].read()
+            logger.debug(f"Binary data size: {len(binary_data)} bytes")
+            thumb_blob = client.upload_blob(binary_data)
+            logger.info(f"Image uploaded successfully: {thumb_blob}")
+
+        # Prepare the post embed structure if a blob was uploaded
+        embed_structure = None
+        if embed and thumb_blob:
             try:
-                # Ensure image_file is readable and reset pointer
-                embed["image_file"].seek(0)
-
-                # Upload the binary image blob to Bluesky without mime_type
-                binary_data = embed["image_file"].read()
-                logger.debug(f"Binary data size: {len(binary_data)} bytes")
-                thumb_blob = client.upload_blob(binary_data)
-                logger.info(f"Image uploaded successfully: {thumb_blob}")
-
-            except Exception as e:
-                logger.error(f"Failed to upload image: {str(e)}")
-                thumb_blob = None
-
-        # Prepare the post embed structure if blob was uploaded
-        logger.debug("Preparing post embed structure.")
-        embed_structure = models.AppBskyEmbedExternal.Main(
-            external=models.AppBskyEmbedExternal.External(
-                uri=embed["article_url"], # was imagee_url
-                title=embed["title"], # was file_name
-                description=embed["description"],  # Optional: Add a short description
-                thumb=thumb_blob.blob
-            )
-        )
-        logger.debug(f"Post embed structure: {embed_structure}")
+                embed_structure = models.AppBskyEmbedExternal.Main(
+                    external=models.AppBskyEmbedExternal.External(
+                        uri=embed["article_url"],
+                        title=embed["title"],
+                        description=embed["description"],
+                        thumb=thumb_blob.blob  # Use the returned blob reference for the embed
+                    )
+                )
+                logger.debug(f"Post embed structure created: {embed_structure}")
+            except AttributeError as e:
+                logger.error(f"Error creating embed structure: {e}")
+                return False
 
         # Publish the post with facets (for the clickable hyperlink)
         logger.info(f"Posting content to Bluesky: {content[:50]}...")  # Truncate content for logging
