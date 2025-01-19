@@ -15,11 +15,13 @@ def main():
     try:
         raindrop = get_latest_raindrop_to_skeet(config['RAINDROP_TOKEN'])
         if raindrop:
-            post_content, facets, embed = format_bluesky_post_from_raindrop(raindrop)
+#            post_content, facets, embed = format_bluesky_post_from_raindrop(raindrop)
+            formatted_text, facets, embed = format_bluesky_post_from_raindrop(raindrop)
+            logger.debug(f"Embed structure before posting: {embed}")
             success = post_content_to_bluesky(
                 config['BLUESKY_IDENTIFIER'],
                 config['BLUESKY_PASSWORD'],
-                post_content,
+                formatted_text,
                 facets,
                 embed
             )
