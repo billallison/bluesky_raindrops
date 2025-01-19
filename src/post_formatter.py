@@ -72,48 +72,36 @@ def create_image_embed(image_url):
 
         image = Image.open(io.BytesIO(response.content))
         logger.debug(f"Image opened. Original dimensions: {image.width}x{image.height}")
-        
-        # Convert to PNG
-        image = image.convert('RGB')
-        
-        # Adjust the aspect ratio to 1.91:1
-        target_ratio = 1.91
-        current_ratio = image.width / image.height
-        
-        if current_ratio > target_ratio:
-            # Image is too wide, crop the width
-            new_width = int(image.height * target_ratio)
-            left = (image.width - new_width) // 2
-            image = image.crop((left, 0, left + new_width, image.height))
-        elif current_ratio < target_ratio:
-            # Image is too tall, crop the height
-            new_height = int(image.width / target_ratio)
-            top = (image.height - new_height) // 2
-            image = image.crop((0, top, image.width, top + new_height))
-        
-        # Resize to a suitable size for Bluesky, maintaining 1.91:1 ratio
-        max_size = (955, 500)  # 1.91:1 aspect ratio
-        image.thumbnail(max_size, Image.LANCZOS)
-        
-        logger.debug(f"Image cropped and resized: {image.width}x{new_height}")
 
-        output = io.BytesIO()
-        image.save(output, format='PNG')
-        output.seek(0)
-        logger.debug("Image successfully saved to buffer for upload")
+        # Calculate new dimensions
+        max_width = 1000
+        max_height = 1000
+        width, height = image.size
         
-        file_name = urlparse(image_url).path.split('/')[-1]
-        file_name = f"{file_name.split('.')[0]}.png"
-        
+        if width > max_width or height > max_height:
+            ratio = min(max_width / width, max_height / height)
+            new_width = int(width * ratio)
+            new_height = int(height * ratio)
+            image = image.resize((new_width, new_height))
+        else:
+            new_width, new_height = width, height
+
+        logger.debug(f"Image cropped and resized: {new_width}x{new_height}")
+
+        # Convert to RGB if necessary
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+
+        # Save to BytesIO object
+        img_byte_arr = io.BytesIO()
+        image.save(img_byte_arr, format='JPEG')
+        img_byte_arr.seek(0)
+
         return {
-            'image_file': output,
-            'mime_type': 'image/png',
-            'file_name': file_name,
-            'image_url': image_url
+            'image_file': img_byte_arr,
+            'alt_text': 'Image from article'
         }
-    except requests.exceptions.RequestException as e:
-        logger.exception(f"Failed to download image from {image_url}: {str(e)}")
-        return None
+
     except Exception as e:
         logger.exception(f"Error creating image embed: {str(e)}")
         return None
