@@ -6,8 +6,17 @@ from PIL import Image
 from src.utils.logging_config import setup_logging
 import unidecode
 import time
+import random
 
 logger = setup_logging()
+
+USER_AGENTS = [
+#    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+#    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15',
+#    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'
+]
+
 
 def format_bluesky_post_from_raindrop(raindrop):
     title = raindrop.get('title', '').strip()
@@ -54,10 +63,11 @@ def extract_skeet_content(note):
 
 def create_image_embed(image_url, raindrop, timeout=10):
     logger.debug(f"Starting image embedding process for URL: {image_url}")
-    
+    headers = {'User-Agent': random.choice(USER_AGENTS)}
     try:
         # First, try to download the image from the original URL
-        response = requests.get(image_url, timeout=timeout)
+        response = requests.get(image_url, timeout=timeout, headers=headers)
+
         response.raise_for_status()
         image = Image.open(io.BytesIO(response.content))
         logger.debug(f"Original image opened. Dimensions: {image.width}x{image.height}")
@@ -68,7 +78,7 @@ def create_image_embed(image_url, raindrop, timeout=10):
         cache_url = f"https://rdl.ink/render/{urlparse(raindrop['link']).geturl()}"
         logger.info(f"Falling back to Raindrop cached image: {cache_url}")
         try:
-            response = requests.get(cache_url, timeout=timeout)
+            response = requests.get(cache_url, timeout=timeout, headers=headers)
             response.raise_for_status()
             image = Image.open(io.BytesIO(response.content))
             logger.debug(f"Cached image opened. Dimensions: {image.width}x{image.height}")
