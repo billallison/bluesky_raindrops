@@ -23,6 +23,9 @@ def get_latest_raindrop_to_skeet(token):
         "perpage": 1
     }
 
+    logger.debug(f"Requesting latest Raindrop with 'toskeet' tag. Params: {params}")
+
+
     try:
         response = requests.get(
             "https://api.raindrop.io/rest/v1/raindrops/0",
@@ -31,6 +34,9 @@ def get_latest_raindrop_to_skeet(token):
             timeout=10
         )
         response.raise_for_status()
+        
+        # Log response content for debugging
+        logger.debug(f"Response from Raindrop API: {response.text}")
 
         raindrops = response.json().get('items', [])
         if raindrops and '_id' in raindrops[0]:

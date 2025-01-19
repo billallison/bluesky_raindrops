@@ -20,7 +20,7 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
     try:
         # Log in to the Bluesky client
         client.login(identifier, password)
-        logger.info("Logged into Bluesky successfully.")
+        logger.info(f"Logged into Bluesky successfully with identifier: {identifier}")
 
         # Upload the image blob if an embed is provided
         thumb_blob = None
@@ -37,6 +37,7 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
             logger.info(f"Image uploaded successfully: {thumb_blob}")
 
         # Prepare the post embed structure if blob was uploaded
+        logger.debug("Preparing post embed structure.")
         embed_structure = models.AppBskyEmbedExternal.Main(
             external=models.AppBskyEmbedExternal.External(
                 uri=embed["article_url"], # was imagee_url
@@ -48,6 +49,7 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
         logger.debug(f"Post embed structure: {embed_structure}")
 
         # Publish the post with facets (for the clickable hyperlink)
+        logger.info(f"Posting content to Bluesky: {content[:50]}...")  # Truncate content for logging
         response = client.send_post(
             text=content,            # Text body of the post
             facets=facets,           # Hyperlink facets
