@@ -67,10 +67,11 @@ def create_image_embed(image_url, raindrop, timeout=10):
     try:
         # First, try to download the image from the original URL
         response = requests.get(image_url, timeout=timeout, headers=headers)
-
         response.raise_for_status()
+
         image = Image.open(io.BytesIO(response.content))
         logger.debug(f"Original image opened. Dimensions: {image.width}x{image.height}")
+
     except Exception as e:
         logger.warning(f"Failed to download or process image from URL: {str(e)}")
         
@@ -90,6 +91,9 @@ def create_image_embed(image_url, raindrop, timeout=10):
     max_size = (1000, 1000)
     image.thumbnail(max_size)
     logger.debug(f"Image processed. New dimensions: {image.width}x{image.height}")
+
+    # Convert image to RGB
+    image = image.convert('RGB')
 
     # Convert image to bytes
     img_byte_arr = io.BytesIO()
