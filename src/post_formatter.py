@@ -25,8 +25,8 @@ def format_bluesky_post_from_raindrop(raindrop):
     link = raindrop.get('link', '').strip()
     note = raindrop.get('note', '')
     cover = raindrop.get('cover', '')
-    description = raindrop.get('excerpt', '')[:90]  # Get a short description, limit to 100 characters
-
+  
+    description = (raindrop.get('excerpt', '')[:97] + '…').strip()  # Get a short description, limit to 100 characters including ellipsis
     #character limit
     character_limit = 280
 
