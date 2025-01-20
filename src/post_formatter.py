@@ -1,12 +1,15 @@
+# src/post_formatter.py
 import re
 import requests
-from urllib.parse import urlparse, quote
-import io
-from PIL import Image
-from src.utils.logging_config import setup_logging
 import unidecode
 import time
 import random
+import io
+from urllib.parse import quote, urlparse
+from PIL import Image
+import requests
+from typing import Dict, Optional, Tuple
+from src.utils.logging_config import setup_logging
 
 logger = setup_logging()
 
@@ -24,6 +27,9 @@ def format_bluesky_post_from_raindrop(raindrop):
     cover = raindrop.get('cover', '')
     description = raindrop.get('excerpt', '')[:100]  # Get a short description, limit to 100 characters
 
+    #character limit
+    character_limit = 300
+
     logger.debug(f"Raindrop fields extracted: title={title}, link={link}, cover={cover}, description={description}.")
 
     skeet_content = extract_skeet_content(note).strip()
@@ -34,22 +40,46 @@ def format_bluesky_post_from_raindrop(raindrop):
     logger.debug(f"Encoded URL: {encoded_link}")
 
     # Prepare the text content
-    formatted_text = f"{title}\n{skeet_content}\n{encoded_link}"
+#    formatted_text = f"{title}\n{skeet_content}\n{encoded_link}"
 
-    # Ensure the formatted text is within the character limit before creating facets
-    formatted_text = truncate_to_graphemes(formatted_text)
+    # Clean up skeet_content: Strip whitespace and add only if it's non-empty.
+    cleaned_skeet_content = skeet_content.strip()
+
+    if cleaned_skeet_content:
+        # Only add skeet_content if it's non-empty and trimmed
+        formatted_text = f"{title}\n{cleaned_skeet_content}\n{encoded_link}"
+        logger.debug(f"cleaned skeet content formatted text: {formatted_text}")
+    else:
+        # Skip adding an additional line for blank skeet_content
+        formatted_text = f"{title}\n{encoded_link}"
+        logger.debug(f"blank skeet content formatted text: {formatted_text}")
+ 
+
+    # Prevent URL truncation
+    if len(formatted_text) > character_limit:
+        url_start = formatted_text.rfind(encoded_link)
+        if url_start != -1:  # Ensure URL is present
+            before_url = formatted_text[:url_start]
+            truncated_text = truncate_to_graphemes(before_url)  # Truncate text before URL
+            formatted_text = truncated_text + " " + encoded_link  # Append URL directly
+#            formatted_text = truncated_text + "\n" + encoded_link  # Append URL
+        else:
+            formatted_text = truncate_to_graphemes(formatted_text)
+
     logger.debug(f"Truncated formatted text: {formatted_text}")
 
     # Find the exact position of the URL in the truncated text
-    url_start = formatted_text.rfind(encoded_link)
+# Correct byte computation to align with Bluesky's byte-oriented facets
+    url_start = formatted_text.encode('utf-8').find(encoded_link.encode('utf-8'))
     if url_start != -1:
-        url_end = url_start + len(encoded_link)
+        url_end = url_start + len(encoded_link.encode('utf-8'))  # Byte length of encoded_link
         facets = [{
             "index": {"byteStart": url_start, "byteEnd": url_end},
             "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
         }]
+        logger.debug(f"Facets: {facets}")
     else:
-        logger.warning(f"URL not found in formatted text. Facet will not be created.")
+        logger.warning("Encoded link not found (byte-level) in the formatted text!")
         facets = []
 
     logger.debug(f"Created facets: {facets}")
