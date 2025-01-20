@@ -40,11 +40,29 @@ def format_bluesky_post_from_raindrop(raindrop):
     logger.debug(f"Formatted text: {formatted_text}")
 
     # Prepare the facet for the hyperlink
+    #facets = [{
+    #    "index": {"byteStart": len(title) + len(skeet_content) + 2, "byteEnd": len(formatted_text)},
+    #    "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
+    #}]
+    
+    # Ensure the URL is properly encoded
+    encoded_link = quote(link, safe=':/?=')
+
+    # Prepare the text content
+    formatted_text = f"{title}\n{skeet_content}\n{encoded_link}"
+
+    # Calculate the correct byte indices for the URL
+    url_start = len(title) + len(skeet_content) + 2  # +2 for the two newline characters
+    url_end = len(formatted_text)
+
+    # Create the facet for the hyperlink
     facets = [{
-        "index": {"byteStart": len(title) + len(skeet_content) + 2, "byteEnd": len(formatted_text)},
+        "index": {"byteStart": url_start, "byteEnd": url_end},
         "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
     }]
 
+    # Ensure the formatted text is within the character limit
+    formatted_text = truncate_to_graphemes(formatted_text)
     # Prepare embed for the image
     embed = None
     if cover:
