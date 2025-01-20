@@ -49,7 +49,7 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
                 return False
 
         # Publish the post with facets (for the clickable hyperlink)
-        logger.info(f"Posting content to Bluesky: {content[:50]}...")  # Truncate content for logging
+        logger.info(f"Posting content to Bluesky: {content[:450]}...")  # Truncate content for logging
         response = client.send_post(
             text=content,            # Text body of the post
             facets=facets,           # Hyperlink facets
