@@ -25,10 +25,10 @@ def format_bluesky_post_from_raindrop(raindrop):
     link = raindrop.get('link', '').strip()
     note = raindrop.get('note', '')
     cover = raindrop.get('cover', '')
-    description = raindrop.get('excerpt', '')[:100]  # Get a short description, limit to 100 characters
+    description = raindrop.get('excerpt', '')[:90]  # Get a short description, limit to 100 characters
 
     #character limit
-    character_limit = 300
+    character_limit = 280
 
     logger.debug(f"Raindrop fields extracted: title={title}, link={link}, cover={cover}, description={description}.")
 
@@ -146,7 +146,7 @@ def create_image_embed(image_url, raindrop, timeout=10):
         'size': len(img_byte_arr)
     }
 
-def truncate_to_graphemes(text, limit=300):
+def truncate_to_graphemes(text, limit=290):
     """Truncate text to a specified number of graphemes."""
     normalized = unidecode.unidecode(text)
     if len(normalized) <= limit:
