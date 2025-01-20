@@ -17,7 +17,6 @@ USER_AGENTS = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'
 ]
 
-
 def format_bluesky_post_from_raindrop(raindrop):
     title = raindrop.get('title', '').strip()
     link = raindrop.get('link', '').strip()
@@ -36,33 +35,25 @@ def format_bluesky_post_from_raindrop(raindrop):
 
     # Prepare the text content
     formatted_text = f"{title}\n{skeet_content}\n{encoded_link}"
+
+    # Ensure the formatted text is within the character limit before creating facets
     formatted_text = truncate_to_graphemes(formatted_text)
-    logger.debug(f"Formatted text: {formatted_text}")
+    logger.debug(f"Truncated formatted text: {formatted_text}")
 
-    # Prepare the facet for the hyperlink
-    #facets = [{
-    #    "index": {"byteStart": len(title) + len(skeet_content) + 2, "byteEnd": len(formatted_text)},
-    #    "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
-    #}]
-    
-    # Ensure the URL is properly encoded
-    encoded_link = quote(link, safe=':/?=')
+    # Find the exact position of the URL in the truncated text
+    url_start = formatted_text.rfind(encoded_link)
+    if url_start != -1:
+        url_end = url_start + len(encoded_link)
+        facets = [{
+            "index": {"byteStart": url_start, "byteEnd": url_end},
+            "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
+        }]
+    else:
+        logger.warning(f"URL not found in formatted text. Facet will not be created.")
+        facets = []
 
-    # Prepare the text content
-    formatted_text = f"{title}\n{skeet_content}\n{encoded_link}"
+    logger.debug(f"Created facets: {facets}")
 
-    # Calculate the correct byte indices for the URL
-    url_start = len(title) + len(skeet_content) + 2  # +2 for the two newline characters
-    url_end = len(formatted_text)
-
-    # Create the facet for the hyperlink
-    facets = [{
-        "index": {"byteStart": url_start, "byteEnd": url_end},
-        "features": [{"$type": "app.bsky.richtext.facet#link", "uri": encoded_link}]
-    }]
-
-    # Ensure the formatted text is within the character limit
-    formatted_text = truncate_to_graphemes(formatted_text)
     # Prepare embed for the image
     embed = None
     if cover:
@@ -129,5 +120,23 @@ def truncate_to_graphemes(text, limit=300):
     """Truncate text to a specified number of graphemes."""
     normalized = unidecode.unidecode(text)
     if len(normalized) <= limit:
+        logger.debug(f"Text within limit, no truncation needed: {text[:50]}...")  # Log first 50 chars
         return text
-    return text[:limit - 3] + '...'
+
+    # Find the last occurrence of http:// or https://
+    url_start = max(text.rfind('http://'), text.rfind('https://'))
+    
+    if url_start != -1:
+        url_length = len(text) - url_start
+        if url_start + url_length <= limit:
+            # URL fits within the limit, truncate only the text before the URL
+            truncated = text[:limit - url_length - 3] + '...' + text[url_start:]
+        else:
+            # URL itself exceeds the limit, truncate the URL
+            truncated = text[:limit - 3] + '...'
+    else:
+        # No URL found, perform normal truncation
+        truncated = text[:limit - 3] + '...'
+    
+    logger.debug(f"Truncated text: {truncated[:50]}...")  # Log first 50 chars of truncated text
+    return truncated
