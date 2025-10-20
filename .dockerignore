@@ -1,0 +1,51 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Environment files (will be mounted as volume)
+.env
+.env.*
+!.env.example
+
+# Logs (will be mounted as volume)
+logs/
+*.log
+
+# Documentation and GitHub files
+README.md
+LICENSE
+docs/
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Other
+*.md
+!requirements.txt

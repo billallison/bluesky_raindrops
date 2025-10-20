@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  bluesky-raindrops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bluesky-raindrops-bot
+    restart: unless-stopped
+    
+    # Mount .env file and logs directory
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./logs:/app/logs
+    
+    # Optional: customize cron schedule (default is every 10 minutes)
+    environment:
+      - CRON_SCHEDULE=*/10 * * * *
+      - TZ=America/New_York
+    
+    # Network mode - default bridge is fine for outbound connections
+    network_mode: bridge
+    
+    # Resource limits (optional - adjust based on your server)
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.5'
+    #       memory: 256M
+    #     reservations:
+    #       memory: 128M
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -2,3 +2,4 @@ requests
 python-dotenv
 atproto  # Ensure compatibility with the Bluesky API
 unidecode
+Pillow  # For image processing
