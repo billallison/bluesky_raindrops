@@ -51,6 +51,9 @@ set -a
 source <(grep -v '^#' /app/.env | grep -v '^$' | sed 's/\r$//')
 set +a
 
+# Suppress pydantic warnings from atproto library
+export PYTHONWARNINGS="ignore::pydantic.warnings.PydanticDeprecatedSince20"
+
 /usr/local/bin/python /app/raindrop_to_bluesky.py >> /app/logs/cron.log 2>&1
 EOF
 
@@ -74,6 +77,7 @@ cd /app
 set -a
 source <(grep -v '^#' /app/.env | grep -v '^$' | sed 's/\r$//')
 set +a
+export PYTHONWARNINGS="ignore::pydantic.warnings.PydanticDeprecatedSince20"
 /usr/local/bin/python /app/raindrop_to_bluesky.py
 EOSU
 
