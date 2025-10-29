@@ -64,33 +64,40 @@ def remove_toskeet_tag(access_token, raindrop_id):
 
     try:
         # First, get the current Raindrop data
+        logger.debug(f"Fetching current tags for Raindrop ID {raindrop_id}")
         get_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
-        get_response = requests.get(get_url, headers=headers)
+        get_response = requests.get(get_url, headers=headers, timeout=10)
         get_response.raise_for_status()
         raindrop_data = get_response.json().get('item', {})
 
         # Extract current tags
         current_tags = raindrop_data.get('tags', [])
+        logger.info(f"Current tags for Raindrop ID {raindrop_id}: {current_tags}")
 
         # Remove 'toskeet' tag if present
         if 'toskeet' in current_tags:
             current_tags.remove('toskeet')
+            logger.info(f"Removing 'toskeet' tag from Raindrop ID {raindrop_id}. New tags: {current_tags}")
 
             # Update the Raindrop with the new tag list
             update_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
             update_data = {"tags": current_tags}
-            update_response = requests.put(update_url, headers=headers, json=update_data)
+            update_response = requests.put(update_url, headers=headers, json=update_data, timeout=10)
             update_response.raise_for_status()
 
             # Parse response for success
             update_result = update_response.json()
+            logger.debug(f"Tag removal API response: {update_result}")
             if update_result.get('result', False):
                 logger.info(f"'toskeet' tag successfully removed from Raindrop ID {raindrop_id}")
                 return True
             else:
                 logger.error(f"Failed to update tags for Raindrop ID {raindrop_id}. Response: {update_result}")
+                return False
         else:
-            logger.warning(f"'toskeet' tag not found for Raindrop ID {raindrop_id}. No action taken.")
+            # Tag already removed - this is success, not an error
+            logger.info(f"'toskeet' tag already removed from Raindrop ID {raindrop_id}. No action needed.")
+            return True
 
     except requests.exceptions.RequestException as e:
         logger.exception(f"HTTP error while removing 'toskeet' tag for Raindrop ID {raindrop_id}: {str(e)}")
