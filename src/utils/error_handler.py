@@ -1,9 +1,9 @@
 # src/utils/error_handler.py
 
 from src.utils.email_handler import send_email
-from src.utils.logging_config import setup_logging
+from src.utils.logging_config import get_logger
 
-logger = setup_logging()
+logger = get_logger(__name__)
 
 def send_error_alert(error_message):
     try:

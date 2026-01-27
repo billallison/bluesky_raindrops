@@ -2,13 +2,24 @@
 
 import requests
 import json
-from src.utils.logging_config import setup_logging
+import time
+from src.utils.logging_config import get_logger
+from src.utils.posted_tracker import is_already_posted
 
-logger = setup_logging()
+logger = get_logger(__name__)
+
+# Retry configuration for transient failures
+MAX_RETRIES = 3
+RETRY_DELAY_SECONDS = 2  # Base delay, will use exponential backoff
+
 
 def get_latest_raindrop_to_skeet(token):
     """
     Get the latest Raindrop with the 'toskeet' tag.
+    
+    Filters out items that have already been posted (tracked locally)
+    to prevent double-posting when tag removal fails.
+    
     Args:
         token: API Bearer token for authentication.
     Returns:
@@ -20,18 +31,17 @@ def get_latest_raindrop_to_skeet(token):
     params = {
         "search": json.dumps([{"key": "tag", "val": "toskeet"}]),
         "sort": "-created",
-        "perpage": 1
+        "perpage": 5  # Fetch a few in case some are already posted
     }
 
     logger.debug(f"Requesting latest Raindrop with 'toskeet' tag. Params: {params}")
-
 
     try:
         response = requests.get(
             "https://api.raindrop.io/rest/v1/raindrops/0",
             headers=headers,
             params=params,
-            timeout=10
+            timeout=15
         )
         response.raise_for_status()
         
@@ -39,69 +49,106 @@ def get_latest_raindrop_to_skeet(token):
         logger.debug(f"Response from Raindrop API: {response.text}")
 
         raindrops = response.json().get('items', [])
-        if raindrops and '_id' in raindrops[0]:
-            logger.info(f"Latest Raindrop with 'toskeet': {raindrops[0]}")
-            return raindrops[0]  # Return the entire Raindrop object
-        else:
-            logger.info("No Raindrops with the 'toskeet' tag found.")
-            return None
+        
+        # Find the first raindrop that hasn't been posted yet
+        for raindrop in raindrops:
+            if '_id' in raindrop:
+                raindrop_id = raindrop['_id']
+                
+                # Check if already posted (safety net for failed tag removal)
+                if is_already_posted(raindrop_id):
+                    logger.info(f"Skipping Raindrop {raindrop_id} - already posted previously")
+                    continue
+                    
+                logger.info(f"Latest Raindrop with 'toskeet': {raindrop}")
+                return raindrop
+        
+        logger.info("No Raindrops with the 'toskeet' tag found.")
+        return None
 
     except requests.exceptions.RequestException as e:
         logger.exception(f"Error fetching Raindrops: {str(e)}")
         return None
 
+
 def remove_toskeet_tag(access_token, raindrop_id):
     """
     Remove the 'toskeet' tag from a Raindrop by first retrieving the existing tags.
+    
+    Includes retry logic with exponential backoff for transient failures.
 
     Args:
         access_token: Raindrop API access token.
         raindrop_id: The numeric ID of the Raindrop to update.
+        
+    Returns:
+        True if tag was successfully removed, False otherwise.
     """
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
 
-    try:
-        # First, get the current Raindrop data
-        logger.debug(f"Fetching current tags for Raindrop ID {raindrop_id}")
-        get_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
-        get_response = requests.get(get_url, headers=headers, timeout=10)
-        get_response.raise_for_status()
-        raindrop_data = get_response.json().get('item', {})
+    for attempt in range(MAX_RETRIES):
+        try:
+            # First, get the current Raindrop data
+            logger.debug(f"Fetching current tags for Raindrop ID {raindrop_id} (attempt {attempt + 1}/{MAX_RETRIES})")
+            get_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
+            get_response = requests.get(get_url, headers=headers, timeout=15)
+            get_response.raise_for_status()
+            raindrop_data = get_response.json().get('item', {})
 
-        # Extract current tags
-        current_tags = raindrop_data.get('tags', [])
-        logger.info(f"Current tags for Raindrop ID {raindrop_id}: {current_tags}")
+            # Extract current tags
+            current_tags = raindrop_data.get('tags', [])
+            logger.info(f"Current tags for Raindrop ID {raindrop_id}: {current_tags}")
 
-        # Remove 'toskeet' tag if present
-        if 'toskeet' in current_tags:
-            current_tags.remove('toskeet')
-            logger.info(f"Removing 'toskeet' tag from Raindrop ID {raindrop_id}. New tags: {current_tags}")
+            # Remove 'toskeet' tag if present
+            if 'toskeet' in current_tags:
+                current_tags.remove('toskeet')
+                logger.info(f"Removing 'toskeet' tag from Raindrop ID {raindrop_id}. New tags: {current_tags}")
 
-            # Update the Raindrop with the new tag list
-            update_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
-            update_data = {"tags": current_tags}
-            update_response = requests.put(update_url, headers=headers, json=update_data, timeout=10)
-            update_response.raise_for_status()
+                # Update the Raindrop with the new tag list
+                update_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
+                update_data = {"tags": current_tags}
+                update_response = requests.put(update_url, headers=headers, json=update_data, timeout=15)
+                update_response.raise_for_status()
 
-            # Parse response for success
-            update_result = update_response.json()
-            logger.debug(f"Tag removal API response: {update_result}")
-            if update_result.get('result', False):
-                logger.info(f"'toskeet' tag successfully removed from Raindrop ID {raindrop_id}")
-                return True
+                # Parse response for success
+                update_result = update_response.json()
+                logger.debug(f"Tag removal API response: {update_result}")
+                if update_result.get('result', False):
+                    logger.info(f"'toskeet' tag successfully removed from Raindrop ID {raindrop_id}")
+                    return True
+                else:
+                    logger.error(f"Failed to update tags for Raindrop ID {raindrop_id}. Response: {update_result}")
+                    return False
             else:
-                logger.error(f"Failed to update tags for Raindrop ID {raindrop_id}. Response: {update_result}")
-                return False
-        else:
-            # Tag already removed - this is success, not an error
-            logger.info(f"'toskeet' tag already removed from Raindrop ID {raindrop_id}. No action needed.")
-            return True
+                # Tag already removed - this is success, not an error
+                logger.info(f"'toskeet' tag already removed from Raindrop ID {raindrop_id}. No action needed.")
+                return True
 
-    except requests.exceptions.RequestException as e:
-        logger.exception(f"HTTP error while removing 'toskeet' tag for Raindrop ID {raindrop_id}: {str(e)}")
-    except Exception as e:
-        logger.exception(f"Unexpected error while removing 'toskeet' tag: {str(e)}")
+        except requests.exceptions.RequestException as e:
+            delay = RETRY_DELAY_SECONDS * (2 ** attempt)  # Exponential backoff
+            
+            # Check if this is a transient error worth retrying
+            is_transient = (
+                isinstance(e, requests.exceptions.Timeout) or
+                (hasattr(e, 'response') and e.response is not None and 
+                 e.response.status_code in (502, 503, 504, 429))
+            )
+            
+            if is_transient and attempt < MAX_RETRIES - 1:
+                logger.warning(
+                    f"Transient error removing tag (attempt {attempt + 1}/{MAX_RETRIES}): {e}. "
+                    f"Retrying in {delay}s..."
+                )
+                time.sleep(delay)
+                continue
+            else:
+                logger.exception(f"HTTP error while removing 'toskeet' tag for Raindrop ID {raindrop_id}: {str(e)}")
+                return False
+                
+        except Exception as e:
+            logger.exception(f"Unexpected error while removing 'toskeet' tag: {str(e)}")
+            return False
 
     return False
