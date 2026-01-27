@@ -3,11 +3,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from src.utils.config import load_config
-from src.utils.logging_config import setup_logging
-import logging
+from src.utils.logging_config import get_logger
 import os
 
-logger = setup_logging()
+logger = get_logger(__name__)
 
 def get_last_log_entries(num_lines=50):
     log_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'logs')
