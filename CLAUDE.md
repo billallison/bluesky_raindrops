@@ -24,7 +24,14 @@ pip install -r requirements.txt
 python raindrop_to_bluesky.py
 ```
 
-There is no automated test suite; verification is "run it once and watch the log."
+Regression tests under `scripts/` (no test runner — exit non-zero on failure):
+
+```bash
+.venv/bin/python scripts/test_formatter.py    # post_formatter behavior
+bash scripts/test_env_loader.sh               # entrypoint .env-loader behavior
+```
+
+End-to-end verification is still "run it once in the container and watch the log."
 
 ## Architecture
 
@@ -38,6 +45,7 @@ src/utils/logging_config.py
 src/utils/error_handler.py    # send_error_alert() — SMTP email on failure
 src/utils/posted_tracker.py   # Persists posted raindrop IDs to prevent double-posts
 src/utils/file_lock.py        # script_lock() context manager — prevents overlapping runs
+scripts/test_*.py, *.sh   # Regression tests (run directly, no pytest)
 Dockerfile, docker-compose.yml, entrypoint.sh   # Cron-driven container
 ```
 
@@ -59,10 +67,11 @@ The Raindrop note field uses `[skeet_content: ...]` to carry post commentary —
 - **Cover images need conversion before posting** — see commits `09d2439`, `bf1659f`, `c003431`. The Pillow path handles odd source formats and user-agent quirks.
 - **Grapheme limit is not the same as character limit** — `5ef0a47` reduced the cap; Bluesky counts graphemes for the 300-char post limit.
 - **`.env` is volume-mounted in the container** — `cb4f54d` fixed handling so changes don't require a rebuild.
+- **`.env` loader avoids `set -a; source <(...)`** — bash glob-expands unquoted values like `CRON_SCHEDULE=*/5 * * * *` and silently drops them. `entrypoint.sh` reads line-by-line and `export "$line"` instead. See `scripts/test_env_loader.sh` and commit `48718d0`.
 - The container runs cron as a non-root user; logs land in `./logs` on the host.
 
 ## Working Agreements
 
-- **Red-green-refactor TDD.** New behavior gets a failing test before the implementation. Bug fixes get a regression test that reproduces the bug before the fix lands. Keep tests in `scripts/test_*.py` (no pytest yet — plain `python` scripts that exit non-zero on failure).
+- **Red-green-refactor TDD.** New behavior gets a failing test before the implementation. Bug fixes get a regression test that reproduces the bug before the fix lands. Keep tests under `scripts/` (`test_*.py` for Python, `test_*.sh` for shell) — no pytest yet, plain scripts that exit non-zero on failure.
 - Update WORKLOG.md each session with what was done and what's next
 - Keep this file under 200 lines — move details to code comments or `docs/`
