@@ -1,5 +1,9 @@
 # raindrop_to_bluesky.py
 
+# Suppress pydantic deprecation warnings from atproto BEFORE importing
+# anything that pulls in atproto. Must come before src.bluesky_handler.
+from src.utils import warnings_setup  # noqa: F401
+
 from src.raindrop_handler import get_latest_raindrop_to_skeet, remove_toskeet_tag
 from src.bluesky_handler import post_content_to_bluesky
 from src.post_formatter import format_bluesky_post_from_raindrop
