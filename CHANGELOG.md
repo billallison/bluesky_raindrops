@@ -1,54 +1,21 @@
 # Changelog
 
-## [1.1.0] - 2026-01-26
+Notable changes to this project. See `git log` for the full history.
 
-### Bug Fixes
+## [Unreleased]
 
-- **Double-posting prevention**: Posts no longer duplicate when Raindrop API returns 502 during tag removal
-  - Added local tracking of posted items (`posted_tracker.py`)
-  - Items marked as posted BEFORE attempting tag removal
-  - Retry logic with exponential backoff for transient API errors
+- Strip tracking query params (`utm_*`, `cmpid`, `gclid`, `fbclid`, etc.) from posted URLs.
+- Re-truncate post text after build if rendered length still exceeds 300 graphemes (safety net for URL percent-encoding by atproto).
 
-- **Character limit correction**: Fixed post truncation using correct 300 grapheme limit (was incorrectly using 280/290)
-  - Proper Unicode grapheme cluster counting
-  - Posts now use full Bluesky character allowance
+## [1.1.0] — 2026-01-26
 
-### New Features
+- Prevent double-posts when Raindrop API fails during tag removal: track posted IDs locally before tag removal, with retry/backoff for transient errors.
+- Use Bluesky's correct 300-grapheme limit with proper Unicode cluster counting (was 280/290).
+- Add file lock to prevent overlapping cron runs.
+- Migrate post formatting to atproto's `TextBuilder` for facet handling.
+- Retry transient errors (502/503/504/429, timeouts) with exponential backoff.
+- Centralize logging in a single `setup_logging()` call.
 
-- **File locking**: Prevents concurrent script execution from overlapping cron jobs
-  - PID-based lock with stale lock detection
-  - Automatic cleanup of orphaned locks
+## [1.0.0]
 
-- **Posted item tracking**: JSON-based tracking with 7-day retention
-  - Survives tag removal failures
-  - Automatic cleanup of old entries
-
-### Improvements
-
-- **TextBuilder migration**: Switched to atproto's `TextBuilder` for facet handling
-  - Eliminates manual byte-offset calculations
-  - More reliable link detection and formatting
-
-- **Retry logic**: Added retry with exponential backoff for transient errors
-  - Handles 502, 503, 504, 429 status codes
-  - Handles connection timeouts
-  - Fresh client session on each retry attempt
-
-- **Logging centralization**: Refactored to use single `setup_logging()` call
-  - All modules use `get_logger(name)` for consistent logging
-  - Prevents duplicate log entries
-
-### Technical Details
-
-**Files Added:**
-- `src/utils/posted_tracker.py` - Track posted Raindrop IDs
-- `src/utils/file_lock.py` - Script-level locking
-
-**Files Modified:**
-- `raindrop_to_bluesky.py` - Integrated tracking and locking
-- `src/raindrop_handler.py` - Added retry logic, tracking checks
-- `src/bluesky_handler.py` - Added retry logic, fresh client per attempt
-- `src/post_formatter.py` - Complete rewrite with TextBuilder
-- `src/utils/logging_config.py` - Centralized setup
-- `src/utils/error_handler.py` - Use get_logger
-- `src/utils/email_handler.py` - Use get_logger
+- Initial release: Dockerized Bluesky poster driven by Raindrop.io `toskeet` tag, with image embeds, rich-text facets, and SMTP error alerts.
