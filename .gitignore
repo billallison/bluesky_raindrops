@@ -38,3 +38,7 @@ dist/
 build/
 *.egg-info/
 
+# Claude Code
+.claude-transcripts/
+.claude/settings.local.json
+
