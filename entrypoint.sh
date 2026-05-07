@@ -54,8 +54,9 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     export "$line"
 done < /app/.env
 
-# Suppress pydantic deprecation warnings emitted by atproto's use of v1 APIs.
-export PYTHONWARNINGS="ignore::pydantic.PydanticDeprecatedSince20"
+# Note: pydantic deprecation warnings are filtered in Python via
+# src/utils/warnings_setup.py. PYTHONWARNINGS env var doesn't work here
+# because Python parses it before user packages are importable.
 
 /usr/local/bin/python /app/raindrop_to_bluesky.py >> /app/logs/cron.log 2>&1
 EOF
@@ -82,7 +83,6 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
     export "$line"
 done < /app/.env
-export PYTHONWARNINGS="ignore::pydantic.PydanticDeprecatedSince20"
 /usr/local/bin/python /app/raindrop_to_bluesky.py
 EOSU
 

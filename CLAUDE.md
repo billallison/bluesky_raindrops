@@ -45,6 +45,7 @@ src/utils/logging_config.py
 src/utils/error_handler.py    # send_error_alert() — SMTP email on failure
 src/utils/posted_tracker.py   # Persists posted raindrop IDs to prevent double-posts
 src/utils/file_lock.py        # script_lock() context manager — prevents overlapping runs
+src/utils/warnings_setup.py   # Filters pydantic deprecation warnings from atproto
 scripts/test_*.py, *.sh   # Regression tests (run directly, no pytest)
 Dockerfile, docker-compose.yml, entrypoint.sh   # Cron-driven container
 ```
@@ -68,6 +69,7 @@ The Raindrop note field uses `[skeet_content: ...]` to carry post commentary —
 - **Grapheme limit is not the same as character limit** — `5ef0a47` reduced the cap; Bluesky counts graphemes for the 300-char post limit.
 - **`.env` is volume-mounted in the container** — `cb4f54d` fixed handling so changes don't require a rebuild.
 - **`.env` loader avoids `set -a; source <(...)`** — bash glob-expands unquoted values like `CRON_SCHEDULE=*/5 * * * *` and silently drops them. `entrypoint.sh` reads line-by-line and `export "$line"` instead. See `scripts/test_env_loader.sh` and commit `48718d0`.
+- **Pydantic warnings can't be filtered via `PYTHONWARNINGS`** — Python parses `-W` filters before user packages are importable, so any non-builtin warning class fails with `Invalid -W option ignored`. Filter via `src/utils/warnings_setup.py` (imported at the top of `raindrop_to_bluesky.py`) instead.
 - The container runs cron as a non-root user; logs land in `./logs` on the host.
 
 ## Working Agreements
