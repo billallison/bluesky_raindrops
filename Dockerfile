@@ -1,5 +1,4 @@
 # Dockerfile for Raindrop to Bluesky Bot
-# Multi-stage build for efficient image size
 
 FROM python:3.11-slim
 

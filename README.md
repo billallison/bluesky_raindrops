@@ -107,10 +107,6 @@ Then restart: `docker-compose up -d`
 
 ### Option 2: Manual Python Installation
 
----
-
-### Option 2: Manual Python Installation
-
 For those who prefer to run the script directly without Docker:
 
 1. Clone this repository:
@@ -159,8 +155,6 @@ tail -f logs/bluesky_raindrops.log
 # View cron execution logs
 docker-compose exec bluesky-raindrops-bot cat /app/logs/cron.log
 ```
-
-### Manual Python Usage
 
 ### Manual Python Usage
 
