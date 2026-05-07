@@ -8,6 +8,5 @@ logger = get_logger(__name__)
 def send_error_alert(error_message):
     try:
         send_email(error_message)
-        logger.info("Error alert email sent successfully")
     except Exception as e:
         logger.exception(f"Failed to send error alert email: {str(e)}")

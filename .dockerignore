@@ -48,4 +48,3 @@ docker-compose.yml
 
 # Other
 *.md
-!requirements.txt
