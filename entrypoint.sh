@@ -46,13 +46,16 @@ if [ ! -f /app/.env ] || [ ! -r /app/.env ]; then
     exit 1
 fi
 
-# Export environment variables from .env, filtering out comments and empty lines
-set -a
-source <(grep -v '^#' /app/.env | grep -v '^$' | sed 's/\r$//')
-set +a
+# Export environment variables from .env line-by-line. Avoids shell glob
+# expansion on unquoted values like CRON_SCHEDULE=*/5 * * * *.
+while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%$'\r'}"
+    [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+    export "$line"
+done < /app/.env
 
-# Suppress pydantic warnings from atproto library
-export PYTHONWARNINGS="ignore::pydantic.warnings.PydanticDeprecatedSince20"
+# Suppress pydantic deprecation warnings emitted by atproto's use of v1 APIs.
+export PYTHONWARNINGS="ignore::pydantic.PydanticDeprecatedSince20"
 
 /usr/local/bin/python /app/raindrop_to_bluesky.py >> /app/logs/cron.log 2>&1
 EOF
@@ -74,10 +77,12 @@ crontab -u appuser -l
 echo "Running initial execution..."
 su -s /bin/bash appuser << 'EOSU'
 cd /app
-set -a
-source <(grep -v '^#' /app/.env | grep -v '^$' | sed 's/\r$//')
-set +a
-export PYTHONWARNINGS="ignore::pydantic.warnings.PydanticDeprecatedSince20"
+while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%$'\r'}"
+    [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+    export "$line"
+done < /app/.env
+export PYTHONWARNINGS="ignore::pydantic.PydanticDeprecatedSince20"
 /usr/local/bin/python /app/raindrop_to_bluesky.py
 EOSU
 

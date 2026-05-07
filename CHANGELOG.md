@@ -6,6 +6,8 @@ Notable changes to this project. See `git log` for the full history.
 
 - Strip tracking query params (`utm_*`, `cmpid`, `gclid`, `fbclid`, etc.) from posted URLs.
 - Re-truncate post text after build if rendered length still exceeds 300 graphemes (safety net for URL percent-encoding by atproto).
+- entrypoint: load `.env` line-by-line instead of `set -a; source <(...)` to avoid bash glob expansion on values like `CRON_SCHEDULE=*/5 * * * *` (was emitting `logs: command not found` on every container start).
+- entrypoint: fix `PYTHONWARNINGS` filter — `pydantic.warnings.PydanticDeprecatedSince20` → `pydantic.PydanticDeprecatedSince20` (the warnings submodule moved in pydantic v2).
 
 ## [1.1.0] — 2026-01-26
 
