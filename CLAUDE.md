@@ -27,8 +27,9 @@ python raindrop_to_bluesky.py
 Regression tests under `scripts/` (no test runner — exit non-zero on failure):
 
 ```bash
-.venv/bin/python scripts/test_formatter.py    # post_formatter behavior
-bash scripts/test_env_loader.sh               # entrypoint .env-loader behavior
+.venv/bin/python scripts/test_formatter.py        # post_formatter behavior
+.venv/bin/python scripts/test_warnings_setup.py   # pydantic warning filter
+bash scripts/test_env_loader.sh                   # entrypoint .env-loader behavior
 ```
 
 End-to-end verification is still "run it once in the container and watch the log."
@@ -42,7 +43,8 @@ src/bluesky_handler.py    # atproto client: login + post (text, facets, embed)
 src/post_formatter.py     # Builds Bluesky post text + facets + embed from a Raindrop
 src/utils/config.py       # Loads .env via python-dotenv
 src/utils/logging_config.py
-src/utils/error_handler.py    # send_error_alert() — SMTP email on failure
+src/utils/error_handler.py    # send_error_alert() — wraps email_handler, never raises
+src/utils/email_handler.py    # SMTP send: builds alert email with last 50 log lines
 src/utils/posted_tracker.py   # Persists posted raindrop IDs to prevent double-posts
 src/utils/file_lock.py        # script_lock() context manager — prevents overlapping runs
 src/utils/warnings_setup.py   # Filters pydantic deprecation warnings from atproto
