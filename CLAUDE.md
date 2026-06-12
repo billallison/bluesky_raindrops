@@ -27,9 +27,12 @@ python raindrop_to_bluesky.py
 Regression tests under `scripts/` (no test runner — exit non-zero on failure):
 
 ```bash
-.venv/bin/python scripts/test_formatter.py        # post_formatter behavior
-.venv/bin/python scripts/test_warnings_setup.py   # pydantic warning filter
-bash scripts/test_env_loader.sh                   # entrypoint .env-loader behavior
+.venv/bin/python scripts/test_formatter.py            # post_formatter behavior
+.venv/bin/python scripts/test_warnings_setup.py       # pydantic warning filter
+.venv/bin/python scripts/test_posted_tracker.py       # double-post safety net
+.venv/bin/python scripts/test_bluesky_retry.py        # transient-error retry logic
+bash scripts/test_env_loader.sh                       # entrypoint .env-loader behavior
+bash scripts/test_entrypoint_resilience.sh            # container survives failed initial run
 ```
 
 End-to-end verification is still "run it once in the container and watch the log."

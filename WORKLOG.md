@@ -11,9 +11,14 @@ TRIMMING RULE: When this file exceeds 150 lines, compress older entries:
 
 ## Active
 
-Healthy — three reliability fixes deployed today on top of the previous
-maintenance-mode baseline. Next likely work: README's "Future enhancements"
-(genAI alt-text on cover images, genAI summary in place of Raindrop excerpt).
+Healthy — full code review done 2026-06-12; four reliability bugs fixed (not
+yet deployed to the production server: push + SSH deploy pending). Minor review
+findings deferred, candidates for a future session: file_lock TOCTOU race,
+full-raindrop dump at INFO (logs private note text), deprecated
+`datetime.utcnow()`, unpinned requirements + unused `unidecode`, dead embed
+fields (`alt_text`/`mime_type`/`size`), unencoded `rdl.ink` fallback URL,
+`count_graphemes` over-counting ZWJ emoji (safe direction). Also still open:
+README's "Future enhancements" (genAI alt-text, genAI summary).
 
 ## Decisions
 
@@ -29,6 +34,32 @@ maintenance-mode baseline. Next likely work: README's "Future enhancements"
   exits non-zero on failure so CI can pick them up unchanged.
 
 ## Sessions
+
+### 2026-06-12
+
+- **Code review:** Full review of the app (all ~1,065 lines + Docker/cron infra).
+  Confirmed local main in sync with origin and starter-kit scaffolding healthy
+  (all `project-health` checks pass). Review report lives in this session's plan
+  file; deferred minor findings listed under Active above.
+- **Scaffolding aligned (`c480297`):** Added `.claude/rules/tdd.md` from the
+  starter-kit template; fixed CLAUDE.md drift (missing `email_handler.py`,
+  missing test entries).
+- **Bug fixed (`3c6bac1`):** Double-post window — tracker entries expired after
+  7 days, and a permanently failed tag removal was never retried (with
+  `perpage: 5`, five stuck items would hide new ones). Skip path now re-attempts
+  tag removal (self-healing), retention raised to 90 days, and tracker writes
+  are atomic (temp file + `os.replace`; a crash mid-write used to truncate the
+  file and erase posted history). Regression test: `scripts/test_posted_tracker.py`.
+- **Bug fixed (`225386b`):** Container restart loop — a failing initial run
+  under `set -e` killed the container, and `restart: unless-stopped` looped it.
+  Initial run is now failure-tolerant; cron is the supervisor. Regression test:
+  `scripts/test_entrypoint_resilience.sh` (runs the real entrypoint.sh with
+  stubbed su/cron/crontab and a failing python).
+- **Bug fixed (`5994c11`):** Bluesky retry detection matched `'429' in str(e)`,
+  which false-positives on codes appearing in error bodies (e.g. a 400 with
+  "size 4290" retried 3 times). Now checks `e.response.status_code` against
+  (429, 502, 503, 504), text match only as fallback when no response is
+  attached. Regression test: `scripts/test_bluesky_retry.py`.
 
 ### 2026-05-06
 
