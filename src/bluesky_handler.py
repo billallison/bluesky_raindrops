@@ -15,6 +15,20 @@ logger = get_logger(__name__)
 MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 2  # Base delay, will use exponential backoff
 
+# HTTP status codes worth retrying
+TRANSIENT_STATUS_CODES = (429, 502, 503, 504)
+
+
+def _is_transient_request_error(e) -> bool:
+    """Decide retryability from the response status code, not str(e) —
+    substring matching false-positives on codes appearing in error bodies."""
+    response = getattr(e, 'response', None)
+    status_code = getattr(response, 'status_code', None)
+    if status_code is not None:
+        return status_code in TRANSIENT_STATUS_CODES
+    # No response attached (network-level failure) — fall back to text match
+    return any(code in str(e) for code in ('502', '503', '504', '429', 'timeout'))
+
 
 def post_content_to_bluesky(identifier, password, content, facets, embed):
     """
@@ -98,7 +112,7 @@ def post_content_to_bluesky(identifier, password, content, facets, embed):
         except RequestException as e:
             # Check if this is a transient error worth retrying
             delay = RETRY_DELAY_SECONDS * (2 ** attempt)
-            is_transient = any(code in str(e) for code in ('502', '503', '504', '429', 'timeout'))
+            is_transient = _is_transient_request_error(e)
             
             if is_transient and attempt < MAX_RETRIES - 1:
                 logger.warning(
