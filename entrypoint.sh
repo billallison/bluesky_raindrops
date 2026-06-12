@@ -74,9 +74,11 @@ echo "Cron schedule: $CRON_SCHEDULE"
 echo "Cron job installed for user: appuser"
 crontab -u appuser -l
 
-# Run the script once immediately on startup as appuser
+# Run the script once immediately on startup as appuser.
+# Must not kill the container under `set -e` if it fails — with
+# `restart: unless-stopped` that becomes a restart loop. Cron will retry.
 echo "Running initial execution..."
-su -s /bin/bash appuser << 'EOSU'
+su -s /bin/bash appuser << 'EOSU' || echo "WARNING: initial execution failed - cron will retry on schedule"
 cd /app
 while IFS= read -r line || [[ -n "$line" ]]; do
     line="${line%$'\r'}"
