@@ -11,9 +11,10 @@ TRIMMING RULE: When this file exceeds 150 lines, compress older entries:
 
 ## Active
 
-Healthy — full code review done 2026-06-12; four reliability bugs fixed (not
-yet deployed to homemain2025: push + SSH deploy pending). Minor review
-findings deferred, candidates for a future session: file_lock TOCTOU race,
+Healthy — full code review done 2026-06-12; four reliability bugs fixed and
+deployed to homemain2025 same day (submodule bumped to aba48d8, container
+rebuilt, clean first run). Minor review findings deferred, candidates for a
+future session: file_lock TOCTOU race,
 full-raindrop dump at INFO (logs private note text), deprecated
 `datetime.utcnow()`, unpinned requirements + unused `unidecode`, dead embed
 fields (`alt_text`/`mime_type`/`size`), unencoded `rdl.ink` fallback URL,
