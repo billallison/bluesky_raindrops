@@ -20,8 +20,9 @@ TRACKER_FILE = os.path.join(
     'posted_raindrops.json'
 )
 
-# Keep records for 7 days before cleanup
-RETENTION_DAYS = 7
+# Keep records long enough to outlive a stuck 'toskeet' tag — if removal keeps
+# failing, expiring the entry would cause a double-post once it's forgotten.
+RETENTION_DAYS = 90
 
 
 def _load_tracker() -> dict:
@@ -36,14 +37,25 @@ def _load_tracker() -> dict:
 
 
 def _save_tracker(data: dict) -> None:
-    """Save the tracker data to file."""
+    """Save the tracker data atomically.
+
+    Writes to a temp file in the same directory, then os.replace() — a crash
+    mid-write must never truncate the existing file (that would erase the
+    posted history and allow double-posts).
+    """
+    tmp_path = TRACKER_FILE + '.tmp'
     try:
         # Ensure directory exists
         os.makedirs(os.path.dirname(TRACKER_FILE), exist_ok=True)
-        with open(TRACKER_FILE, 'w') as f:
+        with open(tmp_path, 'w') as f:
             json.dump(data, f, indent=2)
-    except IOError as e:
+        os.replace(tmp_path, TRACKER_FILE)
+    except OSError as e:
         logger.error(f"Could not save tracker file: {e}")
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
 
 
 def is_already_posted(raindrop_id: int) -> bool:

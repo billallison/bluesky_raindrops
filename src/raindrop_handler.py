@@ -58,6 +58,15 @@ def get_latest_raindrop_to_skeet(token):
                 # Check if already posted (safety net for failed tag removal)
                 if is_already_posted(raindrop_id):
                     logger.info(f"Skipping Raindrop {raindrop_id} - already posted previously")
+                    # The tag is still present (or it wouldn't be in this fetch),
+                    # so a previous removal failed — retry it now (self-healing).
+                    try:
+                        if remove_toskeet_tag(token, raindrop_id):
+                            logger.info(f"Self-healed: removed stuck 'toskeet' tag from Raindrop {raindrop_id}")
+                        else:
+                            logger.warning(f"Retry of 'toskeet' tag removal failed for Raindrop {raindrop_id}")
+                    except Exception:
+                        logger.exception(f"Error retrying tag removal for Raindrop {raindrop_id}")
                     continue
                     
                 logger.info(f"Latest Raindrop with 'toskeet': {raindrop}")
