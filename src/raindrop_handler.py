@@ -1,7 +1,6 @@
 # src/raindrop_handler.py
 
 import requests
-import json
 import time
 from src.utils.logging_config import get_logger
 from src.utils.posted_tracker import is_already_posted
@@ -28,13 +27,18 @@ def get_latest_raindrop_to_skeet(token):
     headers = {
         "Authorization": f"Bearer {token}"
     }
+    # NOTE: Raindrop's `search` endpoint is eventually-consistent and
+    # CDN-edge-cached keyed on the query URL, so a freshly-tagged item can
+    # read as "not found" for several minutes after tagging. The raw
+    # collection listing reflects tags immediately, so we list recent items
+    # and filter for the tag client-side. Sort by -lastUpdate so a newly
+    # tagged OLD bookmark also surfaces near the top.
     params = {
-        "search": json.dumps([{"key": "tag", "val": "toskeet"}]),
-        "sort": "-created",
-        "perpage": 5  # Fetch a few in case some are already posted
+        "sort": "-lastUpdate",
+        "perpage": 50
     }
 
-    logger.debug(f"Requesting latest Raindrop with 'toskeet' tag. Params: {params}")
+    logger.debug(f"Listing recent Raindrops to find 'toskeet' tag. Params: {params}")
 
     try:
         response = requests.get(
@@ -48,7 +52,12 @@ def get_latest_raindrop_to_skeet(token):
         # Log response content for debugging
         logger.debug(f"Response from Raindrop API: {response.text}")
 
-        raindrops = response.json().get('items', [])
+        # Filter client-side for the 'toskeet' tag — index-independent and
+        # immediate, unlike the search endpoint.
+        raindrops = [
+            raindrop for raindrop in response.json().get('items', [])
+            if 'toskeet' in (raindrop.get('tags') or [])
+        ]
         
         # Find the first raindrop that hasn't been posted yet
         for raindrop in raindrops:
