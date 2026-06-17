@@ -57,7 +57,7 @@ def run_skip_path_check():
         raindrop_handler.requests.get = lambda *a, **k: FakeResponse({"items": items})
         raindrop_handler.is_already_posted = lambda rid: rid == 111
         raindrop_handler.remove_toskeet_tag = (
-            lambda token, rid: removal_attempts.append(rid) or True
+            lambda token, rid, tag="toskeet": removal_attempts.append(rid) or True
         )
 
         result = raindrop_handler.get_latest_raindrop_to_skeet("fake-token")

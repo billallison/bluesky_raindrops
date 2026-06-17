@@ -1,10 +1,10 @@
 # Raindrop to Bluesky Reader Bot
 
-This Python script automatically posts content from Raindrop.io to Bluesky based on specific tags. It's designed to run periodically, fetching the most recent Raindrop item tagged with "toskeet" and posting it to Bluesky.
+This Python script automatically posts content from Raindrop.io to Bluesky based on specific tags. It's designed to run periodically, fetching the most recent Raindrop item tagged with your trigger tag (default `toskeet`, configurable via `RAINDROP_TAG`) and posting it to Bluesky.
 
 ## Features
 
-- Fetches the latest Raindrop item tagged with `toskeet` and posts it to Bluesky as a rich-text link card with an image embed
+- Fetches the latest Raindrop item tagged with your trigger tag (default `toskeet`, set `RAINDROP_TAG` to use your own) and posts it to Bluesky as a rich-text link card with an image embed
 - Optional commentary via `[skeet_content: ...]` in the Raindrop note (see [How It Works](#how-it-works))
 - Strips tracking query parameters (`utm_*`, `cmpid`, `gclid`, `fbclid`, etc.) from posted URLs for cleaner posts and to stay under Bluesky's character limit
 - Respects Bluesky's 300-grapheme limit with proper Unicode counting and a safety-net retry if the rendered text overshoots
@@ -63,6 +63,9 @@ Docker deployment provides a self-contained, isolated environment that runs on a
    SMTP_LOGIN=your_smtp_username@gmail.com
    SMTP_PASSWORD=your_smtp_app_password
    LOG_LEVEL=WARNING
+   # Optional — the trigger tag the bot watches for. Defaults to "toskeet"
+   # if unset. Change it to adopt the tool with your own tag.
+   RAINDROP_TAG=toskeet
    ```
 
 4. Build and start the container:
@@ -236,7 +239,7 @@ docker-compose exec bluesky-raindrops-bot python /app/raindrop_to_bluesky.py
 
 ## How It Works
 
-1. The script queries the Raindrop.io API for the most recent item tagged with `toskeet`. (LIFO — the freshest saved link gets posted first.)
+1. The script queries the Raindrop.io API for the most recent item tagged with the trigger tag (`toskeet` by default; set `RAINDROP_TAG` to change it). (LIFO — the freshest saved link gets posted first.)
 2. If a saved URL is found, the program extracts the item's title, link, and any custom content from the note field. To add commentary to the Bluesky post, write it in the note like this:
    ```
    [skeet_content: put your commentary to post here]

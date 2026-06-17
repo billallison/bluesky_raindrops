@@ -7,12 +7,17 @@ TRIMMING RULE: When this file exceeds 150 lines, compress older entries:
 - Delete anything recoverable from git history or current code
 - Condense completed work into one-line summaries
 - Keep: open questions, key decisions, active experiments, blockers
+
+PUBLIC REPO: this repository is public. Keep server names, hostnames, IPs,
+Tailscale/VPN details, deploy paths, and personal info out of committed files
+and commit messages — refer to infrastructure generically (e.g. "the
+production server").
 -->
 
 ## Active
 
 Healthy — full code review done 2026-06-12; four reliability bugs fixed and
-deployed to the production server same day (submodule bumped to aba48d8, container
+deployed to the production server same day (submodule bumped, container
 rebuilt, clean first run). Minor review findings deferred, candidates for a
 future session: file_lock TOCTOU race,
 full-raindrop dump at INFO (logs private note text), deprecated

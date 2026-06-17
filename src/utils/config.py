@@ -26,6 +26,10 @@ def load_config():
             raise ValueError(f"Missing required environment variable: {var}")
         config[var] = value
     
+    # Trigger tag is optional — defaults to 'toskeet' so existing deploys need
+    # no .env change. Set RAINDROP_TAG to adopt the tool with your own tag.
+    config['RAINDROP_TAG'] = os.getenv('RAINDROP_TAG', 'toskeet')
+
     # Convert SMTP_PORT to integer
     config['SMTP_PORT'] = int(config['SMTP_PORT'])
     

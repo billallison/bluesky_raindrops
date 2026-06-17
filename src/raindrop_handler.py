@@ -13,15 +13,16 @@ MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 2  # Base delay, will use exponential backoff
 
 
-def get_latest_raindrop_to_skeet(token):
+def get_latest_raindrop_to_skeet(token, tag="toskeet"):
     """
-    Get the latest Raindrop with the 'toskeet' tag.
-    
+    Get the latest Raindrop with the trigger tag (default 'toskeet').
+
     Filters out items that have already been posted (tracked locally)
     to prevent double-posting when tag removal fails.
-    
+
     Args:
         token: API Bearer token for authentication.
+        tag: The trigger tag to search for (default 'toskeet').
     Returns:
         The latest Raindrop object or None if not found.
     """
@@ -29,12 +30,12 @@ def get_latest_raindrop_to_skeet(token):
         "Authorization": f"Bearer {token}"
     }
     params = {
-        "search": json.dumps([{"key": "tag", "val": "toskeet"}]),
+        "search": json.dumps([{"key": "tag", "val": tag}]),
         "sort": "-created",
         "perpage": 5  # Fetch a few in case some are already posted
     }
 
-    logger.debug(f"Requesting latest Raindrop with 'toskeet' tag. Params: {params}")
+    logger.debug(f"Requesting latest Raindrop with '{tag}' tag. Params: {params}")
 
     try:
         response = requests.get(
@@ -61,18 +62,18 @@ def get_latest_raindrop_to_skeet(token):
                     # The tag is still present (or it wouldn't be in this fetch),
                     # so a previous removal failed — retry it now (self-healing).
                     try:
-                        if remove_toskeet_tag(token, raindrop_id):
-                            logger.info(f"Self-healed: removed stuck 'toskeet' tag from Raindrop {raindrop_id}")
+                        if remove_toskeet_tag(token, raindrop_id, tag=tag):
+                            logger.info(f"Self-healed: removed stuck '{tag}' tag from Raindrop {raindrop_id}")
                         else:
-                            logger.warning(f"Retry of 'toskeet' tag removal failed for Raindrop {raindrop_id}")
+                            logger.warning(f"Retry of '{tag}' tag removal failed for Raindrop {raindrop_id}")
                     except Exception:
                         logger.exception(f"Error retrying tag removal for Raindrop {raindrop_id}")
                     continue
-                    
-                logger.info(f"Latest Raindrop with 'toskeet': {raindrop}")
+
+                logger.info(f"Latest Raindrop with '{tag}': {raindrop}")
                 return raindrop
-        
-        logger.info("No Raindrops with the 'toskeet' tag found.")
+
+        logger.info(f"No Raindrops with the '{tag}' tag found.")
         return None
 
     except requests.exceptions.RequestException as e:
@@ -80,16 +81,18 @@ def get_latest_raindrop_to_skeet(token):
         return None
 
 
-def remove_toskeet_tag(access_token, raindrop_id):
+def remove_toskeet_tag(access_token, raindrop_id, tag="toskeet"):
     """
-    Remove the 'toskeet' tag from a Raindrop by first retrieving the existing tags.
-    
+    Remove the trigger tag (default 'toskeet') from a Raindrop by first
+    retrieving the existing tags.
+
     Includes retry logic with exponential backoff for transient failures.
 
     Args:
         access_token: Raindrop API access token.
         raindrop_id: The numeric ID of the Raindrop to update.
-        
+        tag: The trigger tag to remove (default 'toskeet').
+
     Returns:
         True if tag was successfully removed, False otherwise.
     """
@@ -110,10 +113,10 @@ def remove_toskeet_tag(access_token, raindrop_id):
             current_tags = raindrop_data.get('tags', [])
             logger.info(f"Current tags for Raindrop ID {raindrop_id}: {current_tags}")
 
-            # Remove 'toskeet' tag if present
-            if 'toskeet' in current_tags:
-                current_tags.remove('toskeet')
-                logger.info(f"Removing 'toskeet' tag from Raindrop ID {raindrop_id}. New tags: {current_tags}")
+            # Remove the trigger tag if present
+            if tag in current_tags:
+                current_tags.remove(tag)
+                logger.info(f"Removing '{tag}' tag from Raindrop ID {raindrop_id}. New tags: {current_tags}")
 
                 # Update the Raindrop with the new tag list
                 update_url = f"https://api.raindrop.io/rest/v1/raindrop/{raindrop_id}"
@@ -125,14 +128,14 @@ def remove_toskeet_tag(access_token, raindrop_id):
                 update_result = update_response.json()
                 logger.debug(f"Tag removal API response: {update_result}")
                 if update_result.get('result', False):
-                    logger.info(f"'toskeet' tag successfully removed from Raindrop ID {raindrop_id}")
+                    logger.info(f"'{tag}' tag successfully removed from Raindrop ID {raindrop_id}")
                     return True
                 else:
                     logger.error(f"Failed to update tags for Raindrop ID {raindrop_id}. Response: {update_result}")
                     return False
             else:
                 # Tag already removed - this is success, not an error
-                logger.info(f"'toskeet' tag already removed from Raindrop ID {raindrop_id}. No action needed.")
+                logger.info(f"'{tag}' tag already removed from Raindrop ID {raindrop_id}. No action needed.")
                 return True
 
         except requests.exceptions.RequestException as e:
@@ -153,11 +156,11 @@ def remove_toskeet_tag(access_token, raindrop_id):
                 time.sleep(delay)
                 continue
             else:
-                logger.exception(f"HTTP error while removing 'toskeet' tag for Raindrop ID {raindrop_id}: {str(e)}")
+                logger.exception(f"HTTP error while removing '{tag}' tag for Raindrop ID {raindrop_id}: {str(e)}")
                 return False
-                
+
         except Exception as e:
-            logger.exception(f"Unexpected error while removing 'toskeet' tag: {str(e)}")
+            logger.exception(f"Unexpected error while removing '{tag}' tag: {str(e)}")
             return False
 
     return False

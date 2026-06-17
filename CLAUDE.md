@@ -1,13 +1,13 @@
 # bluesky_raindrops
 
-Periodically posts Raindrop.io items tagged `toskeet` to Bluesky, then removes the tag. Runs in Docker via cron (default every 10 minutes).
+Periodically posts Raindrop.io items tagged with the trigger tag (`toskeet` by default, configurable via the `RAINDROP_TAG` env var) to Bluesky, then removes the tag. Runs in Docker via cron (default every 10 minutes).
 
 ## Environment & Prerequisites
 
 - **Runtime:** Python 3.7+ (Docker image is the recommended target)
 - **Package manager:** pip (`requirements.txt`); no lockfile
 - **External services:** Raindrop.io API, Bluesky (atproto), SMTP for failure alerts
-- **First-time setup:** `cp .env.example .env` and fill in `RAINDROP_TOKEN`, `BLUESKY_IDENTIFIER`, `BLUESKY_PASSWORD`, SMTP creds
+- **First-time setup:** `cp .env.example .env` and fill in `RAINDROP_TOKEN`, `BLUESKY_IDENTIFIER`, `BLUESKY_PASSWORD`, SMTP creds (and optionally `RAINDROP_TAG` to override the default `toskeet` trigger tag)
 
 ## Build & Run
 

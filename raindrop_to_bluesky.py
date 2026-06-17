@@ -25,7 +25,7 @@ def main():
     cleanup_old_entries()
     
     try:
-        raindrop = get_latest_raindrop_to_skeet(config['RAINDROP_TOKEN'])
+        raindrop = get_latest_raindrop_to_skeet(config['RAINDROP_TOKEN'], tag=config['RAINDROP_TAG'])
         if raindrop:
             raindrop_id = raindrop['_id']
             formatted_text, facets, embed = format_bluesky_post_from_raindrop(raindrop)
@@ -48,11 +48,11 @@ def main():
                 # This prevents double-posting even if tag removal fails
                 mark_as_posted(raindrop_id, bluesky_uri)
                 
-                if remove_toskeet_tag(config['RAINDROP_TOKEN'], raindrop_id):
-                    logger.info("Removed 'toskeet' tag from Raindrop")
+                if remove_toskeet_tag(config['RAINDROP_TOKEN'], raindrop_id, tag=config['RAINDROP_TAG']):
+                    logger.info(f"Removed '{config['RAINDROP_TAG']}' tag from Raindrop")
                 else:
                     # Tag removal failed, but post is tracked - won't double-post
-                    error_msg = f"Failed to remove 'toskeet' tag from Raindrop {raindrop_id}. Post was successful and tracked - will not double-post."
+                    error_msg = f"Failed to remove '{config['RAINDROP_TAG']}' tag from Raindrop {raindrop_id}. Post was successful and tracked - will not double-post."
                     logger.warning(error_msg)
                     send_error_alert(error_msg)
             else:
