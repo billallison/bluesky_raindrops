@@ -1,0 +1,30 @@
+# Claude Code security review for pull requests.
+# Requires a repo secret CLAUDE_API_KEY (Settings > Secrets and variables > Actions).
+#
+# NOTE: triggers on pull_request only — it will not run on direct pushes to main.
+# WARNING: the action is not hardened against prompt injection. Run it only on
+# trusted PRs (e.g. not on pull_request_target from forks).
+
+name: Security Review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: anthropics/claude-code-security-review@main
+        with:
+          comment-pr: true
+          claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
+          # Optional inputs:
+          # exclude-directories: "vendor,node_modules"
+          # claude-model: claude-opus-4-8

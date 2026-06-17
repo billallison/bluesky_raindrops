@@ -41,6 +41,32 @@ README's "Future enhancements" (genAI alt-text, genAI summary).
 
 ## Sessions
 
+### 2026-06-17
+
+- **Tag now configurable (`RAINDROP_TAG`):** The trigger tag was hard-coded as
+  `toskeet` everywhere. Threaded an optional `tag` param through
+  `get_latest_raindrop_to_skeet`/`remove_toskeet_tag`, sourced from a new optional
+  `RAINDROP_TAG` env var (default `toskeet` — existing deploys unchanged). Anyone
+  can now adopt the tool with their own tag. Red/green TDD:
+  `scripts/test_raindrop_tag.py` (custom + default tag, in both the search query
+  and tag removal). Updated the `test_posted_tracker` mock for the new signature.
+  Docs updated (README, CLAUDE.md, `.env.example`).
+- **Privacy audit + history scrub:** This is a **public** repo. Found the private
+  production server name committed (WORKLOG + a commit message) and personal
+  `@allisonfamily.org` emails in all commit author metadata. Sanitized current
+  files, added a public-repo caution to the WORKLOG header, and rewrote ALL
+  history with `git filter-repo` (emails → GitHub noreply, server name →
+  generic). Going-forward git email was already the noreply address. **Local
+  history is clean; force-push is pending (user pushes).** No leaked secrets —
+  `.env` gitignored, `.env.example` placeholders only, no creds in code; no
+  Tailscale/IP/path fingerprints found.
+- **Onboarding:** `/project-health` passes except a missing `security-review.yml`
+  — added it from the starter-kit template (runs on PRs only; needs a
+  `CLAUDE_API_KEY` repo secret).
+- **Next:** (1) Force-push the scrubbed history (`git push --force-with-lease
+  origin main`), then re-bump the private superproject's submodule pointer to the
+  new SHA. (2) Deploy to the production server and watch one run.
+
 ### 2026-06-12
 
 - **Code review:** Full review of the app (all ~1,065 lines + Docker/cron infra).
